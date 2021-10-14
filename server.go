@@ -27,6 +27,9 @@ func main() {
 	if len(os.Args) < 2 {
 		// 에러 보고 및 exit
 		// 에러 보고 코드 들어가야 함.
+
+		// 사용설명 출력
+		fs.Usage()
 		os.Exit(1)
 	}
 
