@@ -36,4 +36,4 @@ func main() {
 
 // https://pkg.go.dev/flag#NewFlagSet
 // https://golang.org/src/flag/flag.go
-// 추후 go mod 나 기타 go dep 사용 가능.
+// 추후 go mod 나 기타 go dep 사용 가능. 아직까지 dependency issue 가 없음.
