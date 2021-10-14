@@ -16,7 +16,7 @@ func main() {
 	// flagset 만들어주기
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 
-	// 처음에는 StringVal 로 하나 받는 것만 해준다. 추후에는 struct 로 만들어 준다.
+	// 처음에는 StringVar 로 하나 받는 것만 해준다. 추후에는 struct 로 만들어 준다.
 	// 디폴트 값은 https://daum.net 이다.
 	fs.StringVar(&s1, "u", "https://daum.net", "https address")
 
