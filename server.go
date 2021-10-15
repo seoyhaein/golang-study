@@ -8,6 +8,15 @@ import (
 	conf "github.com/seoyhaein/golang-study/config"
 )
 
+// 10/15
+// 예전에 세팅해놓은 것이라 틀릴 수도 있음.
+// 위에 import 를 하기 위해서는 또한 github 에 올릴때 충돌?(디렉토리가 이상해지는) 이 없도록 하기 위해서는 몇가지 디렉토리 계층을 가지도록 하는게 좋다.
+// go 의 소스를 놓는 위치인 src 에 github.com/자신의github/프로젝트네임 으로 해주면 별 문제가 없다.
+// 나는 ~/go/src/github.com/seoyhaein/golang-study 에서 작업을 하고 github 에 올린다.
+// 참고 하나는 GOROOT 설정까지 해누는 것이고 다른 하나는 GOBIN 만 설정해주는 것. 요즘은 GOROOT 설정 않해주는 지 모르겠음.
+// https://medium.com/chequer/goroot%EC%99%80-gopath-77f44cbaa1d8
+// https://golang.org/doc/install
+
 /*var (
 	s1 string //test server https address
 	s2 string
@@ -90,4 +99,3 @@ func main() {
 
 // https://pkg.go.dev/flag#NewFlagSet
 // https://golang.org/src/flag/flag.go
-// 추후 go mod 나 기타 go dep 사용 가능. 아직까지 dependency issue 가 없음.
