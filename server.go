@@ -4,12 +4,14 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	conf "github.com/seoyhaein/golang-study/config"
 )
 
-var (
+/*var (
 	s1 string //test server https address
 	s2 string
-)
+)*/
 
 func main() {
 
@@ -54,8 +56,12 @@ func main() {
 			아래 예에서 fs.StringVar(&s1, "-u" 또는 "--u",value,usage) 안된 다는 것이다.
 		    하지만 실행단에서 즉 파라미터에서는 "-u" 또는 "--u" 가능하고 또한 동일 하다.
 	*/
-	fs.StringVar(&s1, "u", "https://daum.net", "https address")
-
+	// 10/14
+	//fs.StringVar(&s1, "u", "https://daum.net", "https address")
+	// 10/15 config struct 를 가지고 온고 디폴트 값을 저장한다.
+	c := conf.DefaultConfig()
+	// 이 함수에서 사용자의 입력 파라미터가 저장된다.
+	c.RegisterFlags(fs)
 	// 사용자 입력값을 파싱한다. 즉, 입력된 파라미터를 s1 에 집어 넣는다.
 	fs.Parse(os.Args[1:]) // command line 의 slice 의 첫번째 파라미터 부터 끝까
 
@@ -70,7 +76,12 @@ func main() {
 	}
 
 	// 여기부터 사용자의 입력 파라미터를 사용하는 코드가 들어간다. 실제적인 코딩 부분
-	fmt.Println("사용자 입력 파라미터", s1)
+	// 10/14
+	//fmt.Println("사용자 입력 파라미터", s1)
+	// 10/15
+	if !c.Silent {
+		fmt.Println("사용자 입력 파라미터", c.S1)
+	}
 }
 
 // https://pkg.go.dev/flag#NewFlagSet
