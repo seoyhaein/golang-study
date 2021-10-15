@@ -66,6 +66,10 @@ func main() {
 
 		// 사용설명 출력
 		fs.Usage()
+		// os.Exit 의 경우 0 ~ 125 까지의 exit status 를 내보낼 수 있는데
+		// 일반적으로 0 의 경우는 정상적인 종료를 의미하고 그 이외는 에러에 따른 종료로 나타낼 수 있다.
+		// golang 같은 경우는 main 함수가 리턴값이 없기 때문에 이러한 방식으로 Exit status 를 확인 할 수 있다.
+		// 또한 os.Exit 이 있는 경우는 defer 가 적용되지 않는다.
 		os.Exit(1)
 	}
 
