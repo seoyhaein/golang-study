@@ -21,7 +21,7 @@ func DefaultConfig() Config {
 
 	c.RegisterFlags(fs)
 
-	만약 리시버를 value 로 만들어 줄 경우 server.go 에서는 아래와 같이 작성해줄 것이다.
+	만약 리시버를 value 로 만들어 줄 경우( (c Config) ) server.go 에서는 아래와 같이 작성해줄 것이다.
     (*c).RegisterFlags(fs)
 */
 func (c *Config) RegisterFlags(fs *flag.FlagSet) {
