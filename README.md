@@ -1,7 +1,7 @@
 # golang-study
 
 1. flag 를 통해서 commandline 에서 사용자의 입력을 받고 app 실행. (사용자가 입력된 데이터를 통해서 app 설정 및 기능 동작)
-   일반적으로 flag 를 통해서 가능하나 보다 더 추가적인 기능들이 필요하다면 cli 나 cobra 를 이용한다.
+   일반적으로 flag 를 통해서 가능하나 보다 더 추가적인 기능들이 필요하다면 cli(github.com/mitchellh/cli) 나 cobra (https://github.com/spf13/cobra) 를 이용한다.
    flag 를 통해서 app 이 동작시 log 기록을 나타나도록 하거나 아니면 log 기록을 나타나지 않게 샘플로 제작한다. 백엔드의 경우 실시간으로 해당 app 의 실시간 상태를 나타나게 해줄 수 있다.
    
 2. 1에서와 같이 부가적인 패키지를 사용하게 되면 디펜던시 이슈가 발생함으로 go mod 나 go dep 을 활용해야 한다. 둘다 사용하기가 편한 툴이라 편한 것을 사용하면 되지만, hashicorp 에서 만든 패키지    를 이용할때는 go dep 을 사용해야 한다. 물론 go mod 와 관련된 이슈를 해결했다고는 하나 go dep 으로 패키지를 진행하는 것이 정신건강에 좋다. 대표적으로 vault 같은 것들이 있다.
