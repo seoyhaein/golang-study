@@ -68,9 +68,15 @@ func main() {
 	// 10/14
 	//fs.StringVar(&s1, "u", "https://daum.net", "https address")
 	// 10/15 config struct 를 가지고 온고 디폴트 값을 저장한다.
+	// 10/16 아래 두 함수를 개선할 필요가 있다.
 	c := conf.DefaultConfig()
 	// 이 함수에서 사용자의 입력 파라미터가 저장된다.
-	c.RegisterFlags(fs)
+	conf, err := c.RegisterConfig(fs)
+
+	if err != nil {
+		os.Exit(1)
+	}
+
 	// 사용자 입력값을 파싱한다. 즉, 입력된 파라미터를 s1 에 집어 넣는다.
 	fs.Parse(os.Args[1:]) // command line 의 slice 의 첫번째 파라미터 부터 끝까
 
@@ -94,6 +100,7 @@ func main() {
 	// 10/15
 	if !c.Silent {
 		fmt.Println("사용자 입력 파라미터", c.S1)
+		fmt.Println("config 파일로부터 읽은 데이터", conf.Filename)
 	}
 }
 

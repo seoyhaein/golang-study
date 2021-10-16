@@ -1,16 +1,32 @@
 package config
 
-import "flag"
+import (
+	"encoding/json"
+	"flag"
+	"io/ioutil"
+)
 
 type Config struct {
-	S1     string //test server https address
-	Silent bool
+	S1             string //test server https address
+	Silent         bool
+	ConfigFilePath string
+
+	// fetching data from config file
+	Filename string
+	// 버전 관련 Makefile 관련 내용 다루기
+	Version string
 }
 
+// 10/16
+/*
+	이함수의 개선점은?  현재 이 struct 는 간단한 struct 지만 커지면??
+	이함수가 개선되면 당연히 이 함수를 호출하는 부분도 수정되어야함.
+*/
 func DefaultConfig() Config {
 	return Config{
-		S1:     "https://daum.net",
-		Silent: true,
+		S1:             "https://daum.net",
+		Silent:         true,
+		ConfigFilePath: "./config/config.json",
 	}
 }
 
@@ -23,11 +39,33 @@ func DefaultConfig() Config {
 	만약 리시버를 value 로 만들어 줄 경우( (c Config) ) server.go 에서는 아래와 같이 작성해줄 것이다.
     (*c).RegisterFlags(fs)
 */
-func (c *Config) RegisterFlags(fs *flag.FlagSet) {
+func (c *Config) RegisterConfig(fs *flag.FlagSet) (*Config, error) {
+
+	// 일반적으로 리턴값에서 error 는 가장 오른쪽에 둔다.
+	// error 의 인터페이스를 활용해서 error 메세지 표시를 바꿀수 있다.
+	// 함수 만들어서 처리, 개선할 필요가 있다.
+	var conf = c
+
 	/*
 		default value 가 세팅된다.
 		형태론적으로 혼동이 올 수 있는데 세번째 파라미터는 디폴트 값이다.
 	*/
 	fs.StringVar(&c.S1, "u", c.S1, "server address")
 	fs.BoolVar(&c.Silent, "silent", c.Silent, "Log nothing to stdout/stderr")
+	fs.StringVar(&c.ConfigFilePath, "path", c.ConfigFilePath, "config file path")
+
+	// 최소 디폴트 값의 url 주소를 가지고 온다.
+	file, err := ioutil.ReadFile(c.ConfigFilePath)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// '=' 기호로 교체되었다.
+	err = json.Unmarshal(file, conf)
+
+	if err != nil {
+		return nil, err
+	}
+	return conf, nil
 }
