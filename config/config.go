@@ -67,5 +67,19 @@ func (c *Config) RegisterConfig(fs *flag.FlagSet) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	/*
+		리턴을 표현할 때
+
+		// 명시적으로 str2 를 리턴값의 이름을 지어줌.
+		func FunctionA(str1 string) (str2 string)  {
+
+		str2 = str1
+		return
+		}
+
+		이렇게 두는 것이 return str2 라고 명시하는 것보다 더 효과적이라는 test 결과를 예전에 웹 상에서 본적이 있다.
+		참고 삼아 한번 적어 보았다.
+	*/
 	return conf, nil
 }
