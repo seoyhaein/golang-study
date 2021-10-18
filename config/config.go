@@ -14,7 +14,7 @@ type Config struct {
 	// fetching data from config file
 	Filename string
 	// 버전 관련 Makefile 관련 내용 다루기
-	Version string
+	// Version string
 }
 
 // 10/16

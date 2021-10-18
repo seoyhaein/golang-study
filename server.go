@@ -22,6 +22,8 @@ import (
 	s2 string
 )*/
 
+var Version = "0.0.0"
+
 func main() {
 
 	// flagset 만들어주기
@@ -101,6 +103,9 @@ func main() {
 	if !c.Silent {
 		fmt.Println("사용자 입력 파라미터", c.S1)
 		fmt.Println("config 파일로부터 읽은 데이터", conf.Filename)
+		// 10/18 Version 수정
+		// 이것을 Config 에 넣는 개선 방안은?
+		fmt.Println("현재 Version", Version)
 	}
 }
 
