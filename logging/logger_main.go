@@ -95,4 +95,11 @@ func main() {
 	Info.Println("warning!")
 	Info.SetFlags(log.Ldate | log.Lmicroseconds | log.Llongfile)
 	Info.Println("warning!")
+
+	// 이 함수를 적용했을 경우 exit code 가 변하는 것을 확인 할 수 있다.
+	// Process finished with exit code 1
+	//Info.Fatalln("fatal error")
+	// panic() 함수 호출
+	// 향후 panic 에 대해서 다루도록 한다.
+	Info.Panicln("Panic~~~")
 }
