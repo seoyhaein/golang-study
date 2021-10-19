@@ -65,6 +65,7 @@
    grpc 모니터링 패키지 이다. 사용해본적이 없지만, 많은 오픈소스에서 활용되고 있는 것을 파악하고 있다.
    
 3. 개발 방향
+    먼저 기초 샘플을 한번 만들어보고, 좀더 개선된것들을 만들어 본다. 
    기본적인 server 제작 및 interceptor, option 등을 다룬다. 세부적인 것은 추후 논의가 들어갈때 그때 그때 다루도록 한다. 
    https://github.com/grpc/grpc-go/blob/master/server.go
    - NewServer, Server, Serveroptions
