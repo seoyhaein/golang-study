@@ -33,6 +33,17 @@ func init() {
 			나는 여기서 os.Stdout 으로 적용했다. 여기서 왜 os.Stdout 이 가능한지는 file.go 를 찾아보면 알 수 있다.
 
 			질문) file.go 에서 무엇 때문에 os.Stdout 이 가능한 것일까? 향후 인터페이스를 다루면 좀더 이해할 수 있는데, 혹시 이 내용을 아는 사람이 있으면 설명 부탁드린다.
+			답변) go에서 interface 는 기본적으로 메서드들의 집합입니다. 가장 큰 특징은 다른 언어들과느는 다르게 interface 를 사용하겠다고 implements 로 선언하지 않고 duck typing 을 사용합니다.
+			     그러니 해당 interface 에서 정의 한 메서드를 구조체가 구현만 하고 있으면 해당 interface 로 인식이 됩니다.
+
+				 file.go 를 보면 os.Stdout 는 File 타입입니다. File 타입의 메서드를 보면 Write 메서드를 구현 하고 있습니다.
+
+				 file.go 의 170번째 줄
+				 func (f *File) Write(b []byte) (n int, err error) {
+					 ...
+				 }
+
+				 그러니 Writer 인터페이스로 인식하고 사용 할 수 있게 됩니다.
 
 			두번째 파라미터는 prefix 이다. 즉 로그로 나타낼 메세지의 앞에 나타나는 메세지 이다.
 			세번재 파라미터는 log flag 이다.
