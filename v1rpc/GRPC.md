@@ -63,3 +63,10 @@
    2.4 https://github.com/grpc-ecosystem/go-grpc-prometheus
    프로메테우스 go-grpc 버전인것 같다.
    grpc 모니터링 패키지 이다. 사용해본적이 없지만, 많은 오픈소스에서 활용되고 있는 것을 파악하고 있다.
+   
+3. 개발 방향
+   기본적인 server 제작 및 interceptor, option 등을 다룬다. 세부적인 것은 추후 논의가 들어갈때 그때 그때 다루도록 한다. 
+   https://github.com/grpc/grpc-go/blob/master/server.go
+   - NewServer, Server, Serveroptions
+   
+   tcp/net 세팅에 관련된 부분들도 다루어야 한다. 이건 grpc 랑 상관없지만 결국은 이 녀석들이 들어나게 된다. (이건 좀 시간이 걸리겠군.)
