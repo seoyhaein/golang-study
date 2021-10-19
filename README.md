@@ -30,4 +30,5 @@
  2. github 통한 코드 리뷰 방식등. 
  3. panic, recover, defer 설명.
  4. go build 시 -ldflags 를 이용하여 빌드시 자동으로 Version 을 만들어 주기.
+ 5. https://www.sohamkamani.com/golang/type-assertions-vs-type-conversions/ 읽어보고 한번 정리해보기
 
