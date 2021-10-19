@@ -1,6 +1,16 @@
 # GRPC 다루기전에 먼저 살펴봐야 하는 것들
 
-1. Protobuf 파일 및 문법.
+1. 기초
+   1.1 https://github.com/grpc/grpc-go
+   여기서 설치 및 세팅에 대한 이해를 구할 수 있다.
+   
+   1.2 https://github.com/protocolbuffers/protobuf-go
+   
+   1.3 https://pkg.go.dev/google.golang.org/protobuf
+   protobuf 공식 메뉴얼 웹사이트이다.
+   
+   1.4 https://developers.google.com/protocol-buffers/docs/overview
+   공식 dev guild 사이트 이다.
 
 2. grpc 에서 활용되는 패키지들.
    나는 grpc 를 다룰때 server 부분을 golang 으로 작성하고 client 부분은 타 언어로 제작된 패키지가 될 수 있다고 생각한다.
