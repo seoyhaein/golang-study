@@ -18,7 +18,7 @@
 
 6. errors (참고 : https://mingrammer.com/gobyexample/errors/ ) 소스가 좀 복잡하게 작성되었지만 어렵지 않을듯 type assertion 에 대한 내용도 있긴 하지만 이 부분도 추가적으로 다루도록 함. 추후 소스에 반영하도록 함.
 
-7. Makefile 사용법 
+7. Makefile 사용법 (터미널에서 Makefile 이 있는 위치에서 아래 명령어를 입력하면 됩니다.)
 ```
 make standard
 
