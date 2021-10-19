@@ -68,6 +68,6 @@
     먼저 기초 샘플을 한번 만들어보고, 좀더 개선된것들을 만들어 본다. 
    기본적인 server 제작 및 interceptor, option 등을 다룬다. 세부적인 것은 추후 논의가 들어갈때 그때 그때 다루도록 한다. 
    https://github.com/grpc/grpc-go/blob/master/server.go
-   - NewServer, Server, Serveroptions
+   - NewServer, Server, Serveroptions, RegisterService
    
    tcp/net 세팅에 관련된 부분들도 다루어야 한다. 이건 grpc 랑 상관없지만 결국은 이 녀석들이 들어나게 된다. (이건 좀 시간이 걸리겠군.)
