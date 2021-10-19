@@ -17,6 +17,10 @@ import (
 
 var Info *log.Logger
 
+// 에러에 대한 내용 추가
+// http://pyrasis.com/book/GoForTheReallyImpatient/Unit60
+// 이것은 log "github.com/sirupsen/logrus" 다루면서 다루도록 하자.
+
 // main 보다 먼저 실행되는 함수, 일반적으로 app 실행전 초기화 코드를 많이 적용한다.
 func init() {
 

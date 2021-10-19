@@ -22,6 +22,7 @@ import (
 	s2 string
 )*/
 
+// 10/18
 var Version = "0.0.0"
 
 func main() {
