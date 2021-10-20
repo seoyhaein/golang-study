@@ -15,6 +15,8 @@ const (
 	port = ":50052"
 )
 
+// 10/20
+// server 에 대한 것도 향후 개선해야한다.
 // protos/greet.pb.go 에 있다.
 type server struct{ pb.UnimplementedGreeterServer }
 
