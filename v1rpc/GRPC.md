@@ -50,6 +50,7 @@
    }' 서버주소(localhost:50051) 서비스 이름/메서드 이름
    
    ex> ./grpcurl --plaintext -d '{"name":"seoyhaein"}' localhost:50052 Greeter.SayHello
+   
    SayHello 의 입력 파라미터는 HelloRequest 인데 여기서 "name" 이라는 하나의 field 만 있다. 그래서 이렇게 처리한다.
    결과는 아래와 같이, 메세지 파라미터에 구현된 함수에 의해서 "Hello 사용자가 입력한 값" 이 출력되는 형태이다. greet.proto 를 확인하면 금방 이해할 수 있다.
    
