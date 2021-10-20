@@ -71,3 +71,18 @@
    - NewServer, Server, Serveroptions, RegisterService
    
    tcp/net 세팅에 관련된 부분들도 다루어야 한다. 이건 grpc 랑 상관없지만 결국은 이 녀석들이 들어나게 된다. (이건 좀 시간이 걸리겠군.)
+   
+   ## grpcurl 에 대한 부분
+   Makefile 을 보면 release 해주는 부분이 있다.
+   
+   아래와 같이 최신버전으로 업데이트 해주고, releasing 폴더에서 README.md 파일을 읽어보면 토큰 만들어주고
+   (github 토큰 같은 경우는 인터넷 찾아보면 쉽게 만들어주는 방법을 찾을 수 있다.) 
+   do-release.sh 실행시켜준 후 make release 하면 release 된 버전을 확인할 수 있다. 나는 그냥 웹사이트에서 다운로드 했다.
+   
+   ```
+   .PHONY: release
+release:
+	@GO111MODULE=on go install github.com/goreleaser/goreleaser@latest
+	goreleaser --rm-dist
+   ```
+   
