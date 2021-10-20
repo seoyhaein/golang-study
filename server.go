@@ -81,7 +81,7 @@ func main() {
 	}
 
 	// 사용자 입력값을 파싱한다. 즉, 입력된 파라미터를 s1 에 집어 넣는다.
-	fs.Parse(os.Args[1:]) // command line 의 slice 의 첫번째 파라미터 부터 끝까
+	fs.Parse(os.Args[1:]) // command line 의 slice 의 첫번째 파라미터 부터 끝까지
 
 	// 여기에 문제가 있다. 찾을 수 있을까?
 	if len(os.Args) < 2 {
