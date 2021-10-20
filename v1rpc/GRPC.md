@@ -94,10 +94,10 @@
    (github 토큰 같은 경우는 인터넷 찾아보면 쉽게 만들어주는 방법을 찾을 수 있다.) 
    do-release.sh 실행시켜준 후 make release 하면 release 된 버전을 확인할 수 있다. 나는 그냥 웹사이트에서 다운로드 했다.
    
-   ```
-   .PHONY: release
+```
+.PHONY: release
 release:
 	@GO111MODULE=on go install github.com/goreleaser/goreleaser@latest
 	goreleaser --rm-dist
-   ```
+```
    
