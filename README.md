@@ -41,6 +41,7 @@ make gogofast
  5. https://www.sohamkamani.com/golang/type-assertions-vs-type-conversions/ 읽어보고 한번 정리해보기.
  6. proto 문법 정리해보기.
  7. 현재는 local 에서 테스트 하기 때문에 아무런 문제가 없는데, 향후 클라우드에 올리거나 원격에 올리고 테스트 할 경우들이 생긴다. 이럴때 원격 디버깅을 해야하는데     원격 디버깅을 하는 방법들에 대해서 정리를 해보자.
+
  8.0 클라이언트 grpc 를 작성해보자. 
  8.1 context 기본 정리하기 참고: https://golangbyexample.com/using-context-in-golang-complete-guide/
 
