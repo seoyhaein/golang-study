@@ -48,7 +48,15 @@ func main() {
 }
 
 // protos/greet.pb.go 에 원형이 존재하고 여기서 함수를 구현해주었다.
+// context 에 대해서 추가적으로 설명해야함.
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	log.Println("Received: ", in.GetName())
 	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil
 }
+
+/*
+	여기서 개선점들이 무엇이 있을까?
+	결국 API 들을 main 에 몰아 넣을 수 없고 따로 떼내어야 하고, 그리고 grpc part 에서 4개의 함수를 잘 구성하는 것이 중요하다.
+
+	NewServer, RegisterGreeterServer (RegisterService), Server, Serveroptions
+*/
