@@ -27,11 +27,16 @@
    grpcurl --import-path proto 위치 -proto  proto 파일 이름 list 
    
    plaintext insecure server 접속의 경우
-   grpcurl --plaintext 서버주소(localhost:50051) list > grpc 서비스 호출  
+   
+   grpcurl --plaintext 서버주소(localhost:50051) list > grpc 서비스 호출
+   ex> ./grpcurl --plaintext localhost:50052 list
+   
    grpcurl --plaintext 서버주소(localhost:50051) list 서비스 이름 > 해당 서비스의 rpc api 호출 
+   ex> ./grpcurl --plaintext localhost:50052 list Greeter
    
    grpc 메서드 살펴보기
    grpcurl --plaintext 서버주소(localhost:50051) describe 서비스.메서드 이름
+   ex> ./grpcurl --plaintext -d '{"name":"seoyhaein"}' localhost:50052 Greeter.SayHello
    
    grpc 메세지 살펴보기
    grpcurl --plaintext 서버주소(localhost:50051) describe .메세지이름
@@ -43,6 +48,15 @@
    grpcurl --plaintext -d '{
    "name": "seoyhaein"
    }' 서버주소(localhost:50051) 서비스 이름/메서드 이름
+   
+   ex> ./grpcurl --plaintext -d '{"name":"seoyhaein"}' localhost:50052 Greeter.SayHello
+   SayHello 의 입력 파라미터는 HelloRequest 인데 여기서 "name" 이라는 하나의 field 만 있다. 그래서 이렇게 처리한다.
+   결과는 아래와 같이, 메세지 파라미터에 구현된 함수에 의해서 "Hello 사용자가 입력한 값" 이 출력되는 형태이다. greet.proto 를 확인하면 금방 이해할 수 있다.
+   
+   {
+  	"message": "Hello seoyhaein"
+   }
+
    
    youtube 에서 설명해주고 있다. hashicorp 에서 개발자로 일하는 사람인거 같은데 (인터뷰에서 몇번 봤음.) 가끔씩 유튜브를 올리는데 내용이 좋다.
    https://www.youtube.com/watch?v=RHWwMrR8LUs
