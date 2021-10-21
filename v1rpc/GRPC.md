@@ -1,4 +1,5 @@
 # GRPC 다루기전에 먼저 살펴봐야 하는 것들
+0. 일단 샘플 파일들은 grpc_clientmain.go grpc_servermain.go 는 패키지 방식을 따르지 않고 그냥 넣어 둠. 향후 옮길 예정임.
 
 1. 기초
    1.1 https://github.com/grpc/grpc-go
