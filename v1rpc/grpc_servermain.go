@@ -54,12 +54,13 @@ func main() {
 // context 에 대해서 추가적으로 설명해야함.
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	// 5초 동안 sleep
-	time.Sleep(time.Second * 10)
+	time.Sleep(time.Second * 5)
 
 	select {
 	case <-ctx.Done():
 		log.Println("SayHello exit") // prints "context deadline exceeded"
 		return &pb.HelloReply{Message: "SayHello exit"}, nil
+	default:
 	}
 
 	log.Println("Received: ", in.GetName())

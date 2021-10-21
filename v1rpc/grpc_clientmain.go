@@ -24,7 +24,7 @@ func main() {
 	defer conn.Close()
 	greetclient := pb.NewGreeterClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
 	res, err := greetclient.SayHello(ctx, &pb.HelloRequest{Name: "golang server"})
