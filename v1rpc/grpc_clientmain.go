@@ -24,6 +24,8 @@ func main() {
 	defer conn.Close()
 	greetclient := pb.NewGreeterClient(conn)
 
+	// server 서는 5초로 설정해 두었다. 5초 보다 느리게 time duration 을 두면 성공
+	// 5초 보다 빠르면 실패한다.
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
