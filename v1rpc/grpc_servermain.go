@@ -51,7 +51,6 @@ func main() {
 }
 
 // protos/greet.pb.go 에 원형이 존재하고 여기서 함수를 구현해주었다.
-// context 에 대해서 추가적으로 설명해야함.
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	// 5초 동안 sleep
 	time.Sleep(time.Second * 5)
