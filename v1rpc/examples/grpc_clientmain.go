@@ -31,6 +31,7 @@ func main() {
 
 	res, err := greetclient.SayHello(ctx, &pb.HelloRequest{Name: "golang server"})
 
+	// 개선해보자 error 을 출력하는 방식으로
 	if err != nil {
 		log.Println("grpc error")
 		os.Exit(1)
