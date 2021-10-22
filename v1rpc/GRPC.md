@@ -80,7 +80,74 @@
    프로메테우스 go-grpc 버전인것 같다.
    grpc 모니터링 패키지 이다. 사용해본적이 없지만, 많은 오픈소스에서 활용되고 있는 것을 파악하고 있다.
    
-3. 개발 방향
+3. https://github.com/grpc/grpc-go/blob/master/server.go 에 대해서
+   3.1 NewServer
+   3.2 RegisterService - relfect 는 차후에 설명, interface 향후 추가 설명 (interface{} 간단히, interface{}{} 도 추후 다뤄보자.)
+   
+   두개의 파라미터를 사용한다. sd *ServiceDesc 와 ss interface{} 이다. 
+   여기서 ss 는 interface{} empty interface 이다. method 를 한개도 가지고 있지 않다. 
+   인터페이스에서 가지고 있는 method 를 구현하고 있는 타입? 은 해당 인터페이스를 파라미터로 두고 있는 곳에 위치할 수 있다.
+   그런데, empty interface 같은 경우는 method 가 하나도 없어서 그 어떤 type 도 담을 수 없을 것 같지만 반대로 모든 type 을 담을 수 있다.
+  
+   ```
+   // RegisterService registers a service and its implementation to the gRPC
+   // server. It is called from the IDL generated code. This must be called before
+   // invoking Serve. If ss is non-nil (for legacy code), its type is checked to
+   // ensure it implements sd.HandlerType.
+   func (s *Server) RegisterService(sd *ServiceDesc, ss interface{}) {
+   	if ss != nil {
+   		ht := reflect.TypeOf(sd.HandlerType).Elem()
+   		st := reflect.TypeOf(ss)
+   		if !st.Implements(ht) {
+   			logger.Fatalf("grpc: Server.RegisterService found the handler of type %v that does not satisfy %v", st, ht)
+   		}
+   	}
+   	s.register(sd, ss)
+   }
+   
+   // RegisterService 함수의 경우 grpc_servermain.go 에서 사용 예를 살펴보면, protos/greet.pb.go 에서 RegisterGreeterServer 에서 사용하고 있다.
+   // srv GreeterServer sms SayHello 메서드를 하나 가지고 있는 인터페이스이다.
+  
+   func RegisterGreeterServer(s *grpc.Server, srv GreeterServer) {
+   	s.RegisterService(&_Greeter_serviceDesc, srv)
+   }
+   
+   // 여기서 살펴볼것은 아래코드를 보면, greet.pb.go 에서 자동으로 만들어 준 코드인데, grpc_servermain.go 에서 넣어주었다.
+   // UnimplementedGreeterServer 같은 경우는 SayHello 를 구현해 주었다. 만약, grpc_servermain.go 에서 SayHello 를 구현해주지 않으면
+   // UnimplementedGreeterServer 의 SayHello 가  호출 될 것이다. sample.go 확인.
+   
+   // UnimplementedGreeterServer can be embedded to have forward compatible implementations.
+   type UnimplementedGreeterServer struct {
+   }
+   
+   // status 활용 샘플 추후에 작성하기.
+   func (*UnimplementedGreeterServer) SayHello(ctx context.Context, req *HelloRequest) (*HelloReply, error) {
+   	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
+   }
+   
+   // grpc_servermain.go
+   type server struct{ pb.UnimplementedGreeterServer }
+
+   // 여기서 _Greeter_serviceDesc 는 protos/greet.pb.go 에서 자동으로 생성되었다. 자세히 보면 greet.proto 파일에서 만들어준 내용들이 들어가 있다.
+
+    var _Greeter_serviceDesc = grpc.ServiceDesc{
+	    ServiceName: "Greeter",
+	    HandlerType: (*GreeterServer)(nil),
+	    Methods: []grpc.MethodDesc{
+		    {
+			    MethodName: "SayHello",
+			    Handler:    _Greeter_SayHello_Handler,
+		    },
+	    },
+	    Streams:  []grpc.StreamDesc{},
+	    Metadata: "greet.proto",
+    }
+
+   ```
+   
+   
+   
+4. 개발 방향
     먼저 기초 샘플을 한번 만들어보고, 좀더 개선된것들을 만들어 본다. 
    기본적인 server 제작 및 interceptor, option 등을 다룬다. 세부적인 것은 추후 논의가 들어갈때 그때 그때 다루도록 한다. 
    https://github.com/grpc/grpc-go/blob/master/server.go

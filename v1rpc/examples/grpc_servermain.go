@@ -18,6 +18,7 @@ const (
 
 // 10/20
 // server 에 대한 것도 향후 개선해야한다.
+// 여기서는 server 라고 표현했지만 service 라고 표현해야 하는게 맞지 않을까?
 // protos/greet.pb.go 에 있다.
 type server struct{ pb.UnimplementedGreeterServer }
 
