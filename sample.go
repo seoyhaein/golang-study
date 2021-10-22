@@ -18,7 +18,7 @@ func Bar(a Fooer) {
 func main() {
 	a := &A{} // note it is a pointer
 	// also there's no need to specify values for default-initialized fields.
-	Bar(a)
+	Bar(a) // calling method Foo of A but Foo of A is not implemented. this cause error??
 }
 
 //////////////////////////////////////////////////////////////////////
