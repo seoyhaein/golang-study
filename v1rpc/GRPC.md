@@ -81,7 +81,9 @@
    grpc 모니터링 패키지 이다. 사용해본적이 없지만, 많은 오픈소스에서 활용되고 있는 것을 파악하고 있다.
    
 3. https://github.com/grpc/grpc-go/blob/master/server.go 에 대해서
+
    3.1 NewServer
+   
    3.2 RegisterService - relfect 는 차후에 설명, interface 향후 추가 설명 (interface{} 간단히, interface{}{} 도 추후 다뤄보자.)
    
    두개의 파라미터를 사용한다. sd *ServiceDesc 와 ss interface{} 이다. 
