@@ -84,7 +84,7 @@
 
    3.1 NewServer
    
-   3.2 RegisterService - relfect 는 차후에 설명, interface 향후 추가 설명 (interface{} 간단히, interface{}{} 도 추후 다뤄보자.)
+   3.2 RegisterService - reflect 는 차후에 설명, interface 향후 추가 설명 (interface{} 간단히, interface{}{} 도 추후 다뤄보자.)
    
    두개의 파라미터를 사용한다. sd *ServiceDesc 와 ss interface{} 이다. 
    여기서 ss 는 interface{} empty interface 이다. method 를 한개도 가지고 있지 않다. 
