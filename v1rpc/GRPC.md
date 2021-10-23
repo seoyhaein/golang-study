@@ -5,7 +5,11 @@
    1.1 https://github.com/grpc/grpc-go
    여기서 설치 및 세팅에 대한 이해를 구할 수 있다.
    
-   1.2 https://github.com/protocolbuffers/protobuf-go
+   1.2 https://github.com/protocolbuffers/protobuf-go , https://github.com/golang/protobuf
+   
+   https://pkg.go.dev/google.golang.org/protobuf@v1.27.1
+   
+   참고) 나는 일반적으로는, import 시  google.golang.org 를 추가해서 사용한다. 예를들어, protobuf file 을 json 으로 encoding/decoding 또는 마샬랑    언마샬링( 의미적으로 차이는 있지만 그냥 쓰도록 함.) 할때 https://github.com/protocolbuffers/protobuf-go 에서 protojson 이 있고                  https://github.com/golang/protobuf 에서 jsonpb 가 있다. 하지만 나는 google.golang.org/protobuf/encoding/protojson 을 사용한다. 정확하진    않지만 해당 github 에서 개발된 녀석들이 공식 패키지로 되는 것이 아닌가 생각해본다.
    
    1.3 https://pkg.go.dev/google.golang.org/protobuf
    protobuf 공식 메뉴얼 웹사이트이다.
