@@ -24,6 +24,12 @@ syntax = "proto3"; // 뛰어 쓰기 조심
 
 // https://developers.google.com/protocol-buffers/docs/reference/go-generated
 package explains;
+
+// import "myproject/other_protos.proto";
+// 에러나는지 살펴보자
+// 외부에 정의된 메세지 가지고 오기
+import "github.com/seoyhaein/golang-study/protos/examples/othermessage.proto";
+
 option go_package = "explains";
 
 // https://docs.microsoft.com/ko-kr/dotnet/architecture/grpc-for-wcf-developers/protobuf-messages
@@ -115,4 +121,45 @@ enum Foo {
     reserved "FOO", "BAR";
     UP = 0;
 }
+
+// SearchRespose 메세지에서 Result 라는 메세지를 사용함.
+message SearchResponse {
+    repeated Result results = 1;
+}
+
+message Result {
+    string url = 1;
+    string title = 2;
+    repeated string snippets = 3;
+}
+
+// Nest 위의 방식과 다른점 살펴보자.
+message SearchResponseNest {
+    message ResultNest {
+        string url = 1;
+        string title = 2;
+        repeated string snippets = 3;
+    }
+    repeated ResultNest results = 1;
+}
+
+message Outer {                  // Level 0
+    message MiddleAA {  // Level 1
+        message Inner {   // Level 2
+            int64 ival = 1;
+            bool  booly = 2;
+        }
+    }
+    message MiddleBB {  // Level 1
+        message Inner {   // Level 2
+            int32 ival = 1;
+            bool  booly = 2;
+        }
+    }
+}
+
+// updating message type
+// https://bluebreeze.co.kr/1277
+
+// Any 부턱 작성
 
