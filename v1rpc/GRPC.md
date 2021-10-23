@@ -12,6 +12,9 @@
    
    1.4 https://developers.google.com/protocol-buffers/docs/overview
    공식 dev guild 사이트 이다.
+   
+   1.5 https://pkg.go.dev/google.golang.org/grpc#section-documentation
+   공식 grpc 메뉴얼이다.
 
 2. grpc 에서 활용되는 패키지들.
    나는 grpc 를 다룰때 server 부분을 golang 으로 작성하고 client 부분은 타 언어로 제작된 패키지가 될 수 있다고 생각한다.
