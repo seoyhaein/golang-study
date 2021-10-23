@@ -20,6 +20,7 @@ syntax = "proto3"; // 뛰어 쓰기 조심
 // https://pkg.go.dev/github.com/golang/protobuf@v1.5.2  최신 github 주소 및 그에 대한 설명
 // https://github.com/protocolbuffers/protobuf protobuf 공식 개발 주소, proto file 확인용
 // https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=oidoman&logNo=220773055827 그냥 참고
+// https://talzuchung-kty.tistory.com/4 참고
 
 // https://developers.google.com/protocol-buffers/docs/reference/go-generated
 package explains;
@@ -44,11 +45,74 @@ option java_outer_classname = "explains";
 // 와 대응해서 작성하자.
 
 
-
+// if a scalar message field is set to its default, the value will not be serialized on the wire.
+// 디폴트로 세팅되어 있는 경우 엔코딩 안됨.
 message scala_types {
-    double  double_var = 1;
-    float   float_var = 2;
+    double      double_var = 1;
+    float       float_var = 2;
+    int32       int32_var = 3;
+    int64       int64_var = 4;
+    uint32      uint32_var = 5;
+    uint64      uint64_var = 6;
+    sint32      sint32_var = 7;
+    fixed32     fixed32_var = 8;
+    fixed64     fixed64_var = 9;
+    sfixed32    sfixed32_var = 10;
+    sfixed64    sfixed64_var = 11;
+    bool        bool_var = 12;
+    string      string_var = 13;
+    bytes       bytes_var = 14;
 
+    // 메세지 안에 있는 enum
+    // enum 타입 같은 경우는 언어 타입에 제한이 있을 수 있음.
+    // explains.pb.go 로 변환 될때 어떤 struct 로 변환될지 살펴봄.
+    enum EnumAllowingAlias {
+        option allow_alias = true;
+        UNKNOWN = 0;
+        STARTED = 1;
+        RUNNING = 1;
+    }
+    // 아래 코드가 없을때 테스트 해볼 것
+    EnumAllowingAlias EnumAllowingAlias_var = 15;
 
+    enum EnumNotAllowingAlias {
+        UNKNOWNTYPE = 0;
+        STARTEDTYPE = 1;
+        // RUNNING = 1;  // Uncommenting this line will cause a compile error inside Google and a warning message outside.
+    }
+    // 아래 코드가 없을때 테스트 해볼 것
+    EnumNotAllowingAlias EnumNotAllowingAlias_var = 16;
+}
+
+// 메세지 밖에 있는 enum
+enum Global_EnumNotAllowingAlias {
+    Global_UNKNOWNTYPE = 0;
+    Global_STARTEDTYPE = 1;
+    // RUNNING = 1;  // Uncommenting this line will cause a compile error inside Google and a warning message outside.
+}
+
+// _MessageType_._EnumType_.
+message use_enumtype {
+    scala_types.EnumAllowingAlias enumtype1 = 1;
+    Global_EnumNotAllowingAlias enmtype2 = 2;
 
 }
+
+
+/*
+During deserialization, unrecognized enum values will be preserved in the message,
+though how this is represented when the message is deserialized is language-dependent.
+In languages that support open enum types with values outside the range of specified symbols,
+such as C++ and Go, the unknown enum value is simply stored as its underlying integer representation.
+In languages with closed enum types such as Java, a case in the enum is used to represent an unrecognized value,
+and the underlying integer can be accessed with special accessors.
+In either case, if the message is serialized the unrecognized value will still be serialized with the message.
+*/
+
+// 어떻게 converting 되는지 궁금함.
+enum Foo {
+    reserved 2, 15, 9 to 11, 40 to max;
+    reserved "FOO", "BAR";
+    UP = 0;
+}
+
