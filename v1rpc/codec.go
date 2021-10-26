@@ -5,6 +5,7 @@ import (
 	"google.golang.org/grpc/encoding"
 )
 
+// https://sourcegraph.com/github.com/micro/micro/-/blob/service/client/grpc/codec.go?L31
 type (
 	protoCodec struct{}
 	wrapCodec  struct{ encoding.Codec }

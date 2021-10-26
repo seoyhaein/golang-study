@@ -10,5 +10,5 @@ message AnythingForYou {
   google.protobuf.Any anything = 1;
 }
 
-// 서비스 추가.
+// 서비스 추가. 10/28 까지.
 

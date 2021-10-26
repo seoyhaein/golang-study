@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option go_package = "examples";
+
+// 작성중.
+// https://software-factotum.medium.com/protobuf-and-go-handling-oneof-field-type-172ca780ec47
+
+message Patch{
+
+  message Copy{
+    int64 start =1;
+    int64 end=2;
+  }
+
+  message Insert{
+    bytes raw_bytes=1;
+  }
+
+  oneof op{
+    Copy copy_op=3;
+    Insert insert_op=4;
+  }
+}
+
+message Instructions{
+  repeated Patch operations = 1;
+}
