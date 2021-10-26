@@ -82,7 +82,7 @@ func TestAnything(t *testing.T) {
 
 	if a.Anything.TypeUrl != a2.Anything.TypeUrl {
 		if !bytes.Equal(a.Anything.Value, a2.Anything.Value) {
-			t.Fatalf("Values don't match up:\n %+v \n %+v", a, a3)
+			t.Fatalf("Values don't match up:\n %+v \n %+v", a, a2)
 		}
 	}
 
