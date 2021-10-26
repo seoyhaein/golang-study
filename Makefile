@@ -8,4 +8,8 @@ gogofast:
 
 .PHONY: explains
 explains:
-	protoc -I protos protos/examples/explains.proto --gofast_out=plugins=grpc:.
+	protoc -I protos/examples/ protos/examples/explains.proto --gofast_out=plugins=grpc:.
+
+.PHONY: anything
+anything:
+	protoc -I protos/examples/ protos/examples/anything.proto --go_out=plugins=grpc:protos/examples/.

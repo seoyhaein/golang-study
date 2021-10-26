@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package examples;
+
+option go_package =  "examples";
+
+import "google/protobuf/any.proto";
+
+message AnythingForYou {
+  google.protobuf.Any anything = 1;
+}
+
+// 서비스 추가.
+

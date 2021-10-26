@@ -3,6 +3,7 @@ syntax = "proto3"; // 뛰어 쓰기 조심
 // import 가능
 // option 가능 추후 넣자.
 // encoding 설명하기 위해 작성중.
+// 작업중 수정 금지.
 
 // 참고 링크 (향후 삭제할 것임)
 // https://gist.github.com/sebnyberg/8544030bdf061560b67a5d8b46487743#file-todo-proto
@@ -161,5 +162,13 @@ message Outer {                  // Level 0
 // updating message type
 // https://bluebreeze.co.kr/1277
 
+message Person {
+    // Other fields elided
+    repeated string aliases = 8;
+}
+
 // Any 부턱 작성
+// Any 참고 링크
+// https://stackoverflow.com/questions/64055785/how-to-use-protobuf-any-in-golang
+// https://medium.com/@pokstad/sending-any-any-thing-in-golang-with-protobuf-3-95f84838028d
 
