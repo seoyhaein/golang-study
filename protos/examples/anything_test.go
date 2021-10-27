@@ -15,6 +15,7 @@ import (
 /*
 	import 된 패키지들을 잘보면 github 에서 추가된 녀석들과
 	google.golang 에서 추가된 protobuf 패키지의 용도들이 다른 것을 확인 할 수 있다.
+    exoneof_test.go 와 잘 살펴봐야 한다. 무언가 다르다.
 */
 
 func TestAnything(t *testing.T) {
@@ -36,6 +37,11 @@ func TestAnything(t *testing.T) {
 		},
 	}
 	// 마샬링을 두가지 방식으로 한다. 성능 비교는 해봐야 알것 같다
+	// exoneof_test.go 에서 import 한 proto 는 다른 녀석이라서 이부분이 다르다.
+	// exoneof_test.go 에서 추가한 녀석은 github.com/golang/protobuf/proto 이다.
+	// 차이점을 잘 알아야 한다.
+	// 마찬가지로 "google.golang.org/protobuf/types/known/anypb" 도 메서드는 다르지만 마샬링, 언마샬링이 존재한다.
+
 	serializedA, err := proto.Marshal(a.Anything)
 	serializedB, err1 := anypb.New(a.Anything)
 
