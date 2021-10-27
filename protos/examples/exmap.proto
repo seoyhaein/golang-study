@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option go_package = "examples";
+
+// 작성중
+// 오픈소스 참고하자. 마땅한 예제가 없다.
+
+message NameA {
+  repeated string names1 = 1;
+  map<string, NameA> names2 = 2;
+}
+
+
+

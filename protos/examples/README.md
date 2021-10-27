@@ -9,11 +9,13 @@ rpc.proto 의경우는 json 호환이다.
 rpc.proto 의 경우는 grpc 를 통해서 통신하는 것을 확인 할 수 있다. 즉, 같은 proto 를 쓰고 있지만 하나는 http 방식, 하나는 grpc 방식으로 통신하는 것을 알 수 있다.
 
 ## 정리 순서 (소스 수정해야함. 일단 막 작성중)
-1. protobuf 정리
-   1.1 scala type
-   1.2 enum
-   1.3 message
-   1.4 any
-   1.5 oneof
+
+https://developers.google.com/protocol-buffers/docs/proto3#maps
+
+를 기반으로 정리중. 일단 빠르게 작성하고 코드 및 문서에 대한 내용 정리는 다 마친 후에 하자.
+
+1. protobuf 정리중 상태
    1.6 map
-   1.7 service
+   ...
+   1.X techniques
+   

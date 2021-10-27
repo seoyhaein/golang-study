@@ -2,7 +2,7 @@ syntax = "proto3";
 
 option go_package = "examples";
 
-// 작성중.
+
 // https://software-factotum.medium.com/protobuf-and-go-handling-oneof-field-type-172ca780ec47
 
 message Patch{
