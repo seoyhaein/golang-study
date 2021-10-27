@@ -21,5 +21,7 @@ https://developers.google.com/protocol-buffers/docs/proto3#maps
    
 2. gogoprotobuf 
 
+
+참고 : https://jeong-pro.tistory.com/193
 example> https://github.com/seoyhaein/conductor/blob/main/grpc/src/main/proto/model/task.proto
    
