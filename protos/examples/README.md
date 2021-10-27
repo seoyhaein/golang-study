@@ -19,3 +19,7 @@ https://developers.google.com/protocol-buffers/docs/proto3#maps
    ...
    1.X techniques
    
+2. gogoprotobuf 
+
+example> https://github.com/seoyhaein/conductor/blob/main/grpc/src/main/proto/model/task.proto
+   
