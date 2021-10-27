@@ -5,6 +5,7 @@ option go_package = "examples";
 // 작성중
 // 오픈소스 참고하자. 마땅한 예제가 없다.
 
+// struct 타입인데 map 과 비교해보자.
 // 참고 : https://stackoverflow.com/questions/52966444/is-google-protobuf-struct-proto-the-best-way-to-send-dynamic-json-over-grpc
 
 message NameA {
