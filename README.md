@@ -43,7 +43,8 @@ make gogofast
  7. 현재는 local 에서 테스트 하기 때문에 아무런 문제가 없는데, 향후 클라우드에 올리거나 원격에 올리고 테스트 할 경우들이 생긴다. 이럴때 원격 디버깅을 해야하는데     원격 디버깅을 하는 방법들에 대해서 정리를 해보자.
  8. 클라이언트 grpc 를 작성해보자. -> context 기본 정리하기 참고: https://golangbyexample.com/using-context-in-golang-complete-guide/
     -> context 의 설명은 CONTEXT.md 살펴볼것. (완료)
- 9. sample.go 설명 하기. GRPC 설명하면서 참고용으로 만들었다. (참고: http://pyrasis.com/book/GoForTheReallyImpatient/Unit31 )
+ 9. sample.go 설명 하기. GRPC 설명하면서 참고용으로 만들었다. 해당 코드를 좀 잘짜는 방향. (참고: http://pyrasis.com/book/GoForTheReallyImpatient/Unit31 )
+ 10. health check (https://github.com/grpc/grpc/blob/master/doc/health-checking.md) - 안되면 향후 TODO 로 전환
  
  ## TODO list
  1. GRPC 전송 방식(단계적으로 설명하기), long-lived call 방식의 api 설계 및 이에 대한 context 처리, back-off 고려??
