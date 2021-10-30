@@ -49,7 +49,7 @@ func newTaskManSrvHello() pb.GreeterServer {
 	}
 */
 
-// api 정리 context는 사용하지 않는다.
+// api 정리 context는 사용하지 않는다. 고민좀 해보자.
 // client 가 종료 되도 server 는 계속 구동 되는 방식으로 진행해야 한다. 따라서 context 는 사용하지 않는다.
 // 서버에서 처리된 결과는 1차적으로 서버에서 저장되고 (여기선 파일로 저장)
 // 2차적으로 처리 결과가 전송되고, 만일 client 가 접속 종료후 재접속 시에는 서버에 저장된 결과를 전송한다.
