@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package examples;
+
 option go_package = "examples";
 
 // 작성중
@@ -8,9 +10,20 @@ option go_package = "examples";
 // struct 타입인데 map 과 비교해보자.
 // 참고 : https://stackoverflow.com/questions/52966444/is-google-protobuf-struct-proto-the-best-way-to-send-dynamic-json-over-grpc
 
-message NameA {
-  repeated string names1 = 1;
-  map<string, NameA> names2 = 2;
+
+/*
+map<key_type, value_type> map_field = N;
+
+ key_type can be any integral or string type (so, any scalar type except for floating point types and bytes).
+ Note that enum is not a valid key_type. The value_type can be any type except another map.
+
+key_type : 인티저 값이나 string 값이 key 값이 될 수 있다. 단,  스칼라 타입중 부동소수?나 bytes 타입은 안되고, enum 타입도 안된다.
+value_type : 맵 타입을 빼고는 모든 타입이 가능함.
+
+*/
+
+message Name {
+  map<int64, string> names2 = 1;
 }
 
 

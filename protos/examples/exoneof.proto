@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package examples;
+
 option go_package = "examples";
 
 
@@ -16,6 +18,7 @@ message Patch{
     bytes raw_bytes=1;
   }
 
+// 이름을 잘 지어주어야 한다.
   oneof op{
     Copy copy_op=3;
     Insert insert_op=4;

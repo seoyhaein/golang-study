@@ -17,11 +17,15 @@ https://developers.google.com/protocol-buffers/docs/proto3#maps
 1. protobuf 정리중 상태
    1.6 map
    ...
-   1.X techniques
+   
+   techniques 는 나중에.
+   https://developers.google.com/protocol-buffers/docs/techniques
    
 2. gogoprotobuf 
 
+참고 : https://www.linkedin.com/pulse/protobuf-protocol-buffers-simple-introduction-vinoth-selvaraj
 
-참고 : https://jeong-pro.tistory.com/193
 example> https://github.com/seoyhaein/conductor/blob/main/grpc/src/main/proto/model/task.proto
-   
+
+### TODO
+protobuf 에서 import 가 안된다. 설정의 문제인가? 나중에 차츰 차츰 해결해보자.    

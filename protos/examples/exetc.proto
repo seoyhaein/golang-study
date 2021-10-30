@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package examples;
+
+option go_package = "examples";
+
+/*
+During deserialization, unrecognized enum values will be preserved in the message,
+though how this is represented when the message is deserialized is language-dependent.
+In languages that support open enum types with values outside the range of specified symbols,
+such as C++ and Go, the unknown enum value is simply stored as its underlying integer representation.
+In languages with closed enum types such as Java, a case in the enum is used to represent an unrecognized value,
+and the underlying integer can be accessed with special accessors.
+In either case, if the message is serialized the unrecognized value will still be serialized with the message.
+*/
+
+// 어떻게 converting 되는지 궁금함.
+enum Foo {
+  reserved 2, 15, 9 to 11, 40 to max;
+  reserved "FOO", "BAR";
+  UP = 0;
+}
+
+// SearchRespose 메세지에서 Result 라는 메세지를 사용함.
+message SearchResponse {
+  repeated Result results = 1;
+}
+
+message Result {
+  string url = 1;
+  string title = 2;
+  repeated string snippets = 3;
+}
+
+// Nest 위의 방식과 다른점 살펴보자.
+message SearchResponseNest {
+  message ResultNest {
+    string url = 1;
+    string title = 2;
+    repeated string snippets = 3;
+  }
+  repeated ResultNest results = 1;
+}
+
+message Outer {                  // Level 0
+  message MiddleAA {  // Level 1
+    message Inner {   // Level 2
+      int64 ival = 1;
+      bool  booly = 2;
+    }
+  }
+  message MiddleBB {  // Level 1
+    message Inner {   // Level 2
+      int32 ival = 1;
+      bool  booly = 2;
+    }
+  }
+}
+
+// updating message type
+// https://bluebreeze.co.kr/1277
+
+message Person {
+  // Other fields elided
+  repeated string aliases = 8;
+}

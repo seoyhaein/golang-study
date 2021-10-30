@@ -32,7 +32,7 @@ func TestExoneofA(t *testing.T) {
 
 	// 여기서 둘중하나를 넣을 수도 있음. 안넣으면 실패로 뜨게 했음.
 	// 메세지의 부모 자식의 관계는 '부모메세지_자식메세지' 로 표현됨.
-	// 이 부분은 좀더 explains.proto 를 통해서 자세히 다룸.
+	// 이 부분은 좀더 exscala.proto 를 통해서 자세히 다룸.
 	op1 := &pb.Patch_Copy{Start: 10, End: 100}
 	op2 := &pb.Patch_Insert{RawBytes: []byte{'a', 'b', 'c', 'd', 'e', 'a', 'b', 'c', 'd', 'e'}}
 
@@ -45,7 +45,7 @@ func TestExoneofA(t *testing.T) {
 	// repeated 를 써서 슬라이스로 표현했다. []*Patch 타입
 	patchins := &pb.Instructions{Operations: ops}
 
-	// 이부분이 anything_test.go 와 달라지기 작하는 점이다.
+	// 이부분이 exany_test.go 와 달라지기 작하는 점이다.
 	out, err := proto.Marshal(patchins)
 
 	if err != nil {
@@ -67,7 +67,7 @@ func TestExoneofB(t *testing.T) {
 	if err != nil {
 		t.Fatalf("파일 읽기 실패: \n %+v", err)
 	}
-	// 이부분이 anything_test.go 와 달라지기 작하는 점이다.
+	// 이부분이 exany_test.go 와 달라지기 작하는 점이다.
 	// 언마샬할때 받을 녀석
 	instruction := &pb.Instructions{}
 

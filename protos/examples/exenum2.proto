@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package examples;
+
+import "exenum1.proto";
+
+option go_package = "examples";
+
+// 메세지 밖에 있는 enum
+enum Global_EnumNotAllowingAlias {
+  GLOBAL_UNKNOWN_TYPE = 0;
+  GLOBAL_STARTED_TYPE = 1;
+  // RUNNING = 1;  // Uncommenting this line will cause a compile error inside Google and a warning message outside.
+}
+
+// _MessageType_._EnumType_.
+message Use_EnumType {
+  EnumType_1.EnumAllowingAlias enum_type_1 = 1;
+  Global_EnumNotAllowingAlias enm_type_2 = 2;
+}
