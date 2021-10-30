@@ -39,7 +39,7 @@ make gogofast
  3. panic, recover, defer 설명.
  4. go build 시 -ldflags 를 이용하여 빌드시 자동으로 Version 을 만들어 주기.
  5. https://www.sohamkamani.com/golang/type-assertions-vs-type-conversions/ 읽어보고 한번 정리해보기.
- 6. proto 문법 정리해보기. (정리중) 
+ 6. proto 문법 정리해보기. (정리중-문서 및 예제 코드 만들어야 하는데 하기가 싫다. T.T) 
  7. 현재는 local 에서 테스트 하기 때문에 아무런 문제가 없는데, 향후 클라우드에 올리거나 원격에 올리고 테스트 할 경우들이 생긴다. 이럴때 원격 디버깅을 해야하는데     원격 디버깅을 하는 방법들에 대해서 정리를 해보자.
  8. 클라이언트 grpc 를 작성해보자. -> context 기본 정리하기 참고: https://golangbyexample.com/using-context-in-golang-complete-guide/
     -> context 의 설명은 CONTEXT.md 살펴볼것. (완료)
