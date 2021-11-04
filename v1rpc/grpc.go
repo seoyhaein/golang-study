@@ -62,7 +62,7 @@ func Server() (err error) {
 	// 테스트 용으로 hello world 이용함.
 	// 10/30
 	//TODO api 와 package 를 달리 해서 헷갈리는 것을 방지 하자 10/30
-	RegisterHello(grpcServer)
+	RegisterJobsManSrv(grpcServer)
 
 	log.Println("gRPC server started, address : ", address, "listener-address", lis.Addr().String())
 

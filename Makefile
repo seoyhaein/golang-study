@@ -25,9 +25,9 @@ exscala:
 all:
 	protoc -I protos/examples/*.proto --go_out=plugins=grpc:protos/examples/.
 
-.PHONY: tasks
-tasks:
-	protoc -I protos/ protos/tasks.proto --gofast_out=plugins=grpc:protos/.
+.PHONY: jobs
+jobs:
+	protoc -I protos/ protos/jobs.proto --go_out=plugins=grpc:protos/.
 
 ## genprotoc.sh 참고
 

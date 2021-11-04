@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package jobs;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/any.proto";
+
+option go_package = "github.com/seoyhaein/golang-study/protos/jobs";
+
+
+message JobsRequest {
+  int64 job_req_id = 1; // client id 로 할지 고민.
+  map<string, google.protobuf.Value> input_data = 2;
+  google.protobuf.Any input_message = 3;
+}
+
+message JobsResponse {
+  int64 job_req_id = 1; // client id 로 할지 고민.
+
+  enum Status {
+    IN_PROGRESS = 0;
+    CANCELED = 1;
+    FAILED = 2;
+    COMPLETED = 3;
+
+    TIME_OUT = 4; // 일단 넣어두기는 함. 필요 없을 것 같다.
+    FINISHED = 5; // 최종 전송이 되었는가 안되었는가
+  }
+  JobsResponse.Status status = 2;
+
+  map<string, google.protobuf.Value> output_data = 3;
+  google.protobuf.Any output_message = 4;
+}
+
+service LongLivedJobCall {
+  rpc Subscribe(JobsRequest) returns (stream JobsResponse) {}
+  rpc Unsubscribe(JobsRequest) returns (JobsResponse) {}
+}
+
