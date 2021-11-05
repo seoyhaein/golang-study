@@ -105,11 +105,10 @@ func (j *JobManSrv) Unsubscribe(ctx context.Context, req *pb.JobsRequest) (*pb.J
 	return &pb.JobsResponse{JobReqId: req.JobReqId}, nil
 }
 
-// TODO 11/4 일단 여기에는 간단한 id 를 넣어주는 것만.
-// 이녀석은 별도의 스레드로 보내야 할까? 그래야 문제가 없을듯.
-// Subscribe 에서 채널을 통해 데이터를 보내면, exeRunner 에서 받아서 처리하는 방식으로 하는 것은 어떨까?
-// exec.Command 에서 처리 된 결과에 따라서...
-// 일단 루프 구문으로 처리했음.
+// TODO 11/4 일단 여기에는 간단한 id 를 넣어주는 것만. 제일 먼저 처리 하자.(1,2,3 수정)
+// 1. Subscribe 에서 채널을 통해 데이터를 보내면, exeRunner 에서 받아서 처리하는 방식으로 하는 것은 어떨까?
+// 2. exec.Command 에서 처리 된 결과에 따라서...
+// 3. 일단 루프 구문으로 처리했음.
 
 func (j *JobManSrv) exeRunner() {
 	log.Println("Starting data generation")
