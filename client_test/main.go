@@ -12,11 +12,15 @@ import (
 
 func main() {
 	// Create multiple clients and start receiving data
-	var wg sync.WaitGroup
+	var (
+		wg     sync.WaitGroup
+		client *longlivedClient
+		err    error
+	)
 
 	for i := 1; i <= 10; i++ {
 		wg.Add(1)
-		client, err := mkLonglivedClient(int64(i))
+		client, err = mkLonglivedClient(int64(i))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -27,6 +31,9 @@ func main() {
 
 	// The wait group purpose is to avoid exiting, the clients do not exit
 	wg.Wait()
+	// TODO 11/5 error prone. check first asap!
+	// 아마 아래 코드는 절대로 실행되지 않을 것임.
+	client.unsubscribe()
 }
 
 // longlivedClient holds the long lived gRPC client fields
@@ -70,6 +77,7 @@ func (c *longlivedClient) unsubscribe() error {
 	return err
 }
 
+// TODO 11/5 error prone
 func (c *longlivedClient) start() {
 	var err error
 	// stream is the client side of the RPC stream
@@ -82,8 +90,6 @@ func (c *longlivedClient) start() {
 				// Retry on failure
 				continue
 			}
-			// 데이터를 다 받으면 unsubscribe
-
 		}
 		// 데이터를 받고,
 		response, err := stream.Recv()
