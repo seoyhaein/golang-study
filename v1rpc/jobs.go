@@ -12,6 +12,10 @@ import (
 	"google.golang.org/grpc"
 )
 
+// TODO 11/5
+// 참고 os/exec
+// https://medium.com/rungo/executing-shell-commands-script-files-and-executables-in-go-894814f1c0f7
+
 // 10/30
 // TODO api 와 package 를 달리 해서 헷갈리는 것을 방지 하자
 
