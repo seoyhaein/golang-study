@@ -43,9 +43,8 @@ func RegisterJobsManSrv(service *grpc.Server) {
 	//pb.RegisterLongLivedJobCallServer(service, newJobsManSrv1(exeRunner1))
 }
 
-// TODO 11/5
+// TODO 11/5 아래 두 함수 비교해보자.
 // 초기 설정 세팅 해주는 부분
-// 아래 두 함수 비교해보자.
 func newJobsManSrv() pb.LongLivedJobCallServer {
 	j := new(JobManSrv)
 	go j.exeRunner()
@@ -55,7 +54,7 @@ func newJobsManSrv() pb.LongLivedJobCallServer {
 func newJobsManSrv1(f func(j *JobManSrv)) pb.LongLivedJobCallServer {
 	j := new(JobManSrv)
 	return func() pb.LongLivedJobCallServer {
-		// TODO 고루틴 에러 처리 관련 추후 작성.
+		// TODO 11/5 고루틴 에러 처리 관련 추후 작성.
 		go f(j)
 		return j
 	}()
