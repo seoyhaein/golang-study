@@ -50,7 +50,7 @@ func main() {
 			One or two minus signs may be used; they are equivalent.
 			The last form is not permitted for boolean flags because the
 			meaning of the command
-				cmd -x *
+				client_test -x *
 			where * is a Unix shell wildcard, will change if there is a file
 			called 0, false, etc. You must use the -flag=false form to turn
 			off a boolean flag.

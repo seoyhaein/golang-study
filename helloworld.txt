@@ -1,3 +1,0 @@
-http://www.macs.hw.ac.uk/~hwloidl/Courses/LinuxIntro/x864.html
-hello world!
-welcome world!

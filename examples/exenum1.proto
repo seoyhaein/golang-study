@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package examples;
+
+option go_package = "grpc_examples";
+
+message EnumType_1 {
+
+  // 메세지 안에 있는 enum
+  // enum 타입 같은 경우는 언어 타입에 제한이 있을 수 있음.
+  // explains.pb.go 로 변환 될때 어떤 struct 로 변환될지 살펴봄.
+  enum EnumAllowingAlias {
+    option allow_alias = true;
+    AA_UNKNOWN = 0;
+    AA_STARTED = 1;
+    AA_RUNNING = 1;
+  }
+  // 아래 코드가 없을때 테스트 해볼 것
+  EnumAllowingAlias EnumAllowingAlias_var = 1;
+
+  enum EnumNotAllowingAlias {
+    NAA_UNKNOWN = 0;
+    NAA_STARTED = 1;
+    // RUNNING = 1;  // Uncommenting this line will cause a compile error inside Google and a warning message outside.
+  }
+  // 아래 코드가 없을때 테스트 해볼 것
+  EnumNotAllowingAlias EnumNotAllowingAlias_var = 2;
+}
+

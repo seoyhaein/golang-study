@@ -1,11 +1,14 @@
 syntax = "proto3";
 
-package jobs;
+package protos;
 
 import "google/protobuf/struct.proto";
 import "google/protobuf/any.proto";
 
-option go_package = "github.com/seoyhaein/golang-study/protos/jobs";
+// 여기 패키지를 이렇게 하면 폴더가 생긴다. 일단 아래 처럼 간단히 하자.
+//option go_package = "github.com/seoyhaein/golang-study/protos/jobs";
+
+option go_package = "protos";
 
 
 message JobsRequest {
@@ -36,4 +39,5 @@ service LongLivedJobCall {
   rpc Subscribe(JobsRequest) returns (stream JobsResponse) {}
   rpc Unsubscribe(JobsRequest) returns (JobsResponse) {}
 }
+
 
