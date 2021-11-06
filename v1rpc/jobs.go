@@ -136,6 +136,7 @@ func (j *JobManSrv) Unsubscribe(ctx context.Context, req *pb.JobsRequest) (*pb.J
 
 // 참고 : https://mingrammer.com/gobyexample/spawning-processes/
 // https://medium.com/rungo/executing-shell-commands-script-files-and-executables-in-go-894814f1c0f7
+// 고루틴 처리시 종료 시점은 결국 shell script 의 실행완료 이다. 즉, 해당 별도의 프로세스가 실행완료할때 해당 고루틴은 종료!
 func (j *JobManSrv) exeRunner() {
 	log.Println("Starting data generation")
 	for {
