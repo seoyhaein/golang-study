@@ -54,9 +54,6 @@ func main() {
 
 	// The wait group purpose is to avoid exiting, the clients do not exit
 	//wg.Wait()
-	// TODO 11/5 error prone. check first asap!
-	// 아마 아래 코드는 절대로 실행되지 않을 것임.
-	// client.unsubscribe()
 }
 
 // longlivedClient holds the long lived gRPC client fields
