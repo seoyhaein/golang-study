@@ -14,6 +14,7 @@ option go_package = "protos";
 message JobsRequest {
   int64 job_req_id = 1; // client id 로 할지 고민.
   map<string, google.protobuf.Value> input_data = 2;
+  // 여기에는 일단 shell script 가 들어가서 string 이 되어 야 하지만, 일단 any 로 한번 넣어 보자
   google.protobuf.Any input_message = 3;
 }
 
@@ -40,4 +41,9 @@ service LongLivedJobCall {
   rpc Unsubscribe(JobsRequest) returns (JobsResponse) {}
 }
 
+// 향후 삭제
+// test code for any.Any
+message AnyString {
+  string command = 1;
+}
 

@@ -31,7 +31,7 @@ func init() {
 	// https://github.com/grpc/grpc-go/blob/master/Documentation/encoding.md#using-a-codec
 	// https://sourcegraph.com/github.com/asim/go-micro/-/blob/plugins/server/grpc/README.md
 
-	// 일단 테스트용으로 넣어둠.
+	// TODO 11/6 will apply prometheus
 	encoding.RegisterCodec(wrapCodec{protoCodec{}})
 }
 
@@ -46,6 +46,9 @@ func Server() (err error) {
 	network = "tcp"
 	address = ":50052"
 
+	// TODO 11/6 향후 분리 시킨다.
+	// net.Listen 같은 경우는 별도의 connect.go 만들어서 분리한다.
+
 	lis, err = net.Listen(network, address)
 	if err != nil {
 		return
@@ -58,10 +61,6 @@ func Server() (err error) {
 	opts = append(opts, grpc.MaxConcurrentStreams(maxStreams))
 	grpcServer := grpc.NewServer(opts...)
 
-	// 일단 이걸 교체해야함.
-	// 테스트 용으로 hello world 이용함.
-	// 10/30
-	//TODO api 와 package 를 달리 해서 헷갈리는 것을 방지 하자 10/30
 	RegisterJobsManSrv(grpcServer)
 
 	log.Println("gRPC server started, address : ", address, "listener-address", lis.Addr().String())
