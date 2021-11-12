@@ -3,7 +3,9 @@ package v1rpc
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
+	"os/exec"
 	"sync"
 	"time"
 
@@ -137,6 +139,8 @@ func (j *JobManSrv) Unsubscribe(ctx context.Context, req *pb.JobsRequest) (*pb.J
 // 참고 : https://mingrammer.com/gobyexample/spawning-processes/
 // https://medium.com/rungo/executing-shell-commands-script-files-and-executables-in-go-894814f1c0f7
 // 고루틴 처리시 종료 시점은 결국 shell script 의 실행완료 이다. 즉, 해당 별도의 프로세스가 실행완료할때 해당 고루틴은 종료!
+// client 에서 context에 value 를 담아 보내면 종료 처리를 하도록하자.
+// stdio 를 채널로 연결 시킨다.
 func (j *JobManSrv) exeRunner() {
 	log.Println("Starting data generation")
 	for {
@@ -223,3 +227,42 @@ func (j *JobManSrv) exeRunner() {
 		}
 	}
 }*/
+
+// https://groups.google.com/g/golang-nuts/c/MN_W1_oAFrs
+// https://stackoverflow.com/questions/43610646/want-to-write-from-os-stdin-to-os-stdout-using-channels
+// https://stackoverflow.com/questions/10473800/in-go-how-do-i-capture-stdout-of-a-function-into-a-string
+
+// TODO 11/8 고민중
+func (j *JobManSrv) ScriptRunner(ctx context.Context, s string) <-chan string {
+
+	cmd := exec.CommandContext(ctx, s)
+
+	/*	cmd := &exec.Cmd{
+		Path:   "./client_test/date_tester.sh",
+		Args:   []string{"date_tester.sh"},
+		Stdout: os.Stdout,
+		Stderr: os.Stdout,
+	}*/
+
+	/*cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	cmd.Start()*/
+	// 일단 stdout 도 나오게.
+	// 일단 이렇게 하면 결과를 모아서 출력한다. 이렇게 하면 안된다 일단은
+	b, _ := cmd.CombinedOutput()
+
+	r := make(chan string, 1)
+	go func(w io.Writer) {
+		/*	defer close(lines)
+			scan := bufio.NewScanner(r)
+			for scan.Scan() {
+				s := scan.Text()
+				lines <- s
+			}*/
+	}(cmd.Stdout)
+	fmt.Println("return : ", b)
+	//cmd.Wait()
+
+	return r
+}

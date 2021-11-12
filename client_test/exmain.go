@@ -1,61 +1,50 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"os/exec"
 )
 
+// TODO 11/12 버그 있음.
+// 참고
+// https://stackoverflow.com/questions/43610646/want-to-write-from-os-stdin-to-os-stdout-using-channels
+// https://stackoverflow.com/questions/48353768/capture-stdout-from-command-exec-in-real-time
+// https://gist.github.com/mxschmitt/6c07b5b97853f05455c3fdaf48b1a8b6
+
 func main() {
+	s := "./client_test/date_tester.sh"
+	ScriptRunnerA(s)
+	ch := Reply()
 
-	testB()
+	for m := range ch {
+		fmt.Scanln(">", m)
+	}
 }
 
-func testA() {
-	dateCmd := exec.Command("date")
-	dateOut, err := dateCmd.Output()
+// stdio 에 바로 넣음.
+func ScriptRunnerA(s string) {
+	cmd := exec.Command(s)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("> date")
-	fmt.Println(string(dateOut))
+	cmd.Run()
 }
 
-func testA1() {
-	dateCmd := exec.Command("sleep 5s")
-	dateOut, err := dateCmd.Output()
+func Reply() <-chan string {
+	r := make(chan string, 1)
 
-	if err != nil {
-		panic(err)
-	}
+	// TODO 11/12 error prone. 언제 끝날지 생각하자.
+	go func() {
+		// 왜 고루틴에 넣는지 잘 생각할 것
+		defer close(r)
+		scan := bufio.NewScanner(os.Stdout)
 
-	fmt.Println("> date")
-	fmt.Println(string(dateOut))
-}
-
-func testB() {
-	grepCmd := exec.Command("grep", "hello")
-	grepIn, _ := grepCmd.StdinPipe()
-	grepOut, _ := grepCmd.StdoutPipe()
-
-	grepCmd.Start()
-	grepIn.Write([]byte("hello grep\ngoodbye grep"))
-	grepIn.Close()
-	grepBytes, _ := ioutil.ReadAll(grepOut)
-
-	grepCmd.Wait()
-	fmt.Println("> grep hello")
-	fmt.Println(string(grepBytes))
-
-	lsCmd := exec.Command("bash", "-c", "ls -a -l -h")
-	lsOut, err := lsCmd.Output()
-
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("> ls -a -l -h")
-	fmt.Println(string(lsOut))
-
+		for scan.Scan() {
+			s := scan.Text()
+			r <- s
+		}
+	}()
+	return r
 }
