@@ -28,7 +28,7 @@ func ScriptRunnerA(s string) {
 	cmd := exec.Command(s)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-
+	// Reply() 는 ScriptRunnerA 가 끝나면 처리 후 종료 되어야 한다.
 	cmd.Run()
 }
 
