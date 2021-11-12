@@ -50,7 +50,8 @@ make gogofast
  1. GRPC 전송 방식(단계적으로 설명하기), long-lived call 방식의 api 설계 및 이에 대한 context 처리, back-off 고려??
  2. 클라이언트에서 서버 재접속시 서버에서 특정 api call 을 실행중일때 client 에게는 어떻게 하여야 하는가? 1 번 과제와 비슷. 
     사용자는 client 를 쉽게 종료 할 수 있기 때문에 이부분에 대한 문제를 잘 생각해야 한다. 
-    참고 : https://pkg.go.dev/google.golang.org/grpc/backoff
-          https://github.com/grpc/grpc-go/blob/master/examples/features/retry/README.md
-          https://github.com/grpc/grpc-go/tree/master/examples/features
+    참고 :
+    - https://pkg.go.dev/google.golang.org/grpc/backoff
+    - https://github.com/grpc/grpc-go/blob/master/examples/features/retry/README.md
+    - https://github.com/grpc/grpc-go/tree/master/examples/features
 
