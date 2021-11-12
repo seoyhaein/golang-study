@@ -19,7 +19,7 @@ func main() {
 	ch := Reply()
 
 	for m := range ch {
-		fmt.Scanln(">", m)
+		fmt.Println(">", m)
 	}
 }
 
