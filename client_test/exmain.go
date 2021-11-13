@@ -7,7 +7,6 @@ import (
 	"os/exec"
 )
 
-// TODO 11/12 버그 있음.
 // 참고
 // https://stackoverflow.com/questions/43610646/want-to-write-from-os-stdin-to-os-stdout-using-channels
 // https://stackoverflow.com/questions/48353768/capture-stdout-from-command-exec-in-real-time
@@ -18,7 +17,7 @@ import (
 
 func main() {
 	s := "./client_test/date_tester.sh"
-	cmd, r := ScriptRunnerA(s)
+	cmd, r := ScriptRunner(s)
 
 	go func(cmd *exec.Cmd) {
 		if cmd != nil {
@@ -34,8 +33,7 @@ func main() {
 	}
 }
 
-// stdio 에 바로 넣음.
-func ScriptRunnerA(s string) (*exec.Cmd, io.Reader) {
+func ScriptRunner(s string) (*exec.Cmd, io.Reader) {
 	cmd := exec.Command(s)
 
 	// StdoutPipe 쓰면 Run 및 기타 Run 을 포함한 method 를 쓰면 에러난다.
@@ -46,7 +44,6 @@ func ScriptRunnerA(s string) (*exec.Cmd, io.Reader) {
 
 func Reply(i io.Reader) <-chan string {
 	r := make(chan string, 1)
-	// TODO 11/12 error prone. 언제 끝날지 생각하자.
 	go func() {
 		// 왜 고루틴에 넣는지 잘 생각할 것
 		defer close(r)
