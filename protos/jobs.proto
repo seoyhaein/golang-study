@@ -2,9 +2,6 @@ syntax = "proto3";
 
 package protos;
 
-import "google/protobuf/struct.proto";
-import "google/protobuf/any.proto";
-
 // 여기 패키지를 이렇게 하면 폴더가 생긴다. 일단 아래 처럼 간단히 하자.
 //option go_package = "github.com/seoyhaein/golang-study/protos/jobs";
 
@@ -13,13 +10,11 @@ option go_package = "protos";
 
 message JobsRequest {
   int64 job_req_id = 1; // client id 로 할지 고민.
-  map<string, google.protobuf.Value> input_data = 2;
-  // 여기에는 일단 shell script 가 들어가서 string 이 되어 야 하지만, 일단 any 로 한번 넣어 보자
-  google.protobuf.Any input_message = 3;
+  string input_message = 2;
 }
 
 message JobsResponse {
-  int64 job_req_id = 1; // client id 로 할지 고민.
+  int64 job_res_id = 1; // client id 로 할지 고민.
 
   enum Status {
     IN_PROGRESS = 0;
@@ -30,10 +25,9 @@ message JobsResponse {
     TIME_OUT = 4; // 일단 넣어두기는 함. 필요 없을 것 같다.
     FINISHED = 5; // 최종 전송이 되었는가 안되었는가
   }
-  JobsResponse.Status status = 2;
 
-  map<string, google.protobuf.Value> output_data = 3;
-  google.protobuf.Any output_message = 4;
+  JobsResponse.Status status = 2;
+  string output_message = 3;
 }
 
 service LongLivedJobCall {
@@ -41,9 +35,4 @@ service LongLivedJobCall {
   rpc Unsubscribe(JobsRequest) returns (JobsResponse) {}
 }
 
-// 향후 삭제
-// test code for any.Any
-message AnyString {
-  string command = 1;
-}
 

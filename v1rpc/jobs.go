@@ -1,22 +1,17 @@
 package v1rpc
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"io"
 	"log"
 	"os/exec"
 	"sync"
-	"time"
 
-	"github.com/golang/protobuf/ptypes/any"
 	pb "github.com/seoyhaein/golang-study/protos"
 	"google.golang.org/grpc"
 )
-
-// TODO 11/5
-// 참고 os/exec
-// https://medium.com/rungo/executing-shell-commands-script-files-and-executables-in-go-894814f1c0f7
 
 // 10/30
 // TODO api 와 package 를 달리 해서 헷갈리는 것을 방지 하자
@@ -29,15 +24,9 @@ type JobManSrv struct {
 	subscribers sync.Map
 }
 
-// map 에 저장하는 녀석, 향후 수정.
-// 음.....
-
 type sub struct {
-	req_id int64
-	// output 을 저장하는 녀석
-	output any.Any
-	status pb.JobsResponse_Status
-
+	id       int64
+	status   pb.JobsResponse_Status
 	stream   pb.LongLivedJobCall_SubscribeServer // 이건 여기다 넣어야 할까? 고민중
 	finished chan<- bool
 }
@@ -72,7 +61,7 @@ func newJobsManSrv() pb.LongLivedJobCallServer {
 // TODO 11/6 이름이 맘에 안듬 추후 수정
 func (j *JobManSrv) Subscribe(in *pb.JobsRequest, s pb.LongLivedJobCall_SubscribeServer) error {
 
-	log.Println("job request ID: ", in.JobReqId)
+	log.Println("1. job request ID: ", in.JobReqId)
 
 	fin := make(chan bool)
 
@@ -81,10 +70,14 @@ func (j *JobManSrv) Subscribe(in *pb.JobsRequest, s pb.LongLivedJobCall_Subscrib
 	ctx := s.Context()
 
 	// TODO 11/6 추후 수정 asap. 테스트 코드를 만들어서 진행 후 적용
-	// 현재 고루틴 방식으로 만들어지지 않았다.
-	go j.exeRunner()
+	cmd, r := j.scriptRunner(ctx, in)
+	log.Println("2. Run scriptRunner ")
+	go j.reply(r)
+	log.Println("3. Reply... ")
 
-	// Keep this scope alive because once this scope exits - the stream is closed
+	cmd.Start()
+	cmd.Wait()
+	log.Println("4. Ready... ")
 	for {
 		select {
 		case <-fin:
@@ -96,19 +89,6 @@ func (j *JobManSrv) Subscribe(in *pb.JobsRequest, s pb.LongLivedJobCall_Subscrib
 		}
 	}
 }
-
-// 새벽에 작업한것이라 일단 삭제
-// 대충짬 졸리다. 아이디어가 떠올라서 그냥 메모 형태로 작성중. 아닌것 같다. 처음 생각했던것이랑 다른 거 같은데. TT
-/*func (j *JobManSrv) SubscribeT(in *pb.JobsRequest, s pb.LongLivedJobCall_SubscribeServer) error {
-	// to do something.
-	// block part.
-	return subscribe(exeRunner1,j)
-}
-
-func subscribe(f func(j *JobManSrv), j *JobManSrv) error {
-	go f(j)
-	return nil
-}*/
 
 // Unsubscribe 를 client 에서 실행 전까지 exeRunner 를 계속 구동 시킨다.
 func (j *JobManSrv) Unsubscribe(ctx context.Context, req *pb.JobsRequest) (*pb.JobsResponse, error) {
@@ -127,29 +107,30 @@ func (j *JobManSrv) Unsubscribe(ctx context.Context, req *pb.JobsRequest) (*pb.J
 		// default 구문 주목.
 	}
 	j.subscribers.Delete(req.JobReqId)
-	return &pb.JobsResponse{JobReqId: req.JobReqId}, nil
+	return &pb.JobsResponse{JobResId: req.JobReqId}, nil
 }
 
-// TODO 11/4 일단 여기에는 간단한 id 를 넣어주는 것만. 제일 먼저 처리 하자.(1,2,3,4 수정)
-// 1. Subscribe 에서 채널을 통해 데이터를 보내면, exeRunner 에서 받아서 처리하는 방식으로 하는 것은 어떨까?
-// 2. exec.Command 에서 처리 된 결과에 따라서...
-// 3. 일단 루프 구문으로 처리했음.
-// 4. 해당 함수는 고루틴 용으로 제작된 함수는 아니다. 하지만 일단 리턴값은 없기 때문에 그냥 둔다.
+// stdio 에 바로 넣음. 아직 context 처리는 하지 않음.
+func (j *JobManSrv) scriptRunner(ctx context.Context, in *pb.JobsRequest) (*exec.Cmd, io.Reader) {
+	// script is InputMessage
+	cmd := exec.CommandContext(ctx, in.InputMessage)
 
-// 참고 : https://mingrammer.com/gobyexample/spawning-processes/
-// https://medium.com/rungo/executing-shell-commands-script-files-and-executables-in-go-894814f1c0f7
-// 고루틴 처리시 종료 시점은 결국 shell script 의 실행완료 이다. 즉, 해당 별도의 프로세스가 실행완료할때 해당 고루틴은 종료!
-// client 에서 context에 value 를 담아 보내면 종료 처리를 하도록하자.
-// stdio 를 채널로 연결 시킨다.
-func (j *JobManSrv) exeRunner() {
-	log.Println("Starting data generation")
-	for {
-		time.Sleep(time.Second)
+	// StdoutPipe 쓰면 Run 및 기타 Run 을 포함한 method 를 쓰면 에러난다.
+	r, _ := cmd.StdoutPipe()
 
-		// A list of clients to unsubscribe in case of error
-		var unsubscribe []int64
+	return cmd, r
+}
 
-		// Range 함수는 재귀호출 구문을 사용한다. 정말 좋은 예이다.
+// TODO 11/13 버그 있음 해결 해야 함.
+func (j *JobManSrv) reply(i io.Reader) {
+	var unsubscribe []int64
+
+	scan := bufio.NewScanner(i)
+	// 디버깅 해야함.
+	for scan.Scan() {
+		s := scan.Text()
+		// 주석처리 요망
+		log.Println(s)
 		j.subscribers.Range(func(k, v interface{}) bool {
 			id, ok := k.(int64)
 			if !ok {
@@ -161,9 +142,8 @@ func (j *JobManSrv) exeRunner() {
 				log.Printf("Failed to cast subscriber value: %T", v)
 				return false
 			}
-			// TODO 11/5 error prone
-			// Send data over the gRPC stream to the client
-			if err := sub.stream.Send(&pb.JobsResponse{JobReqId: id}); err != nil {
+
+			if err := sub.stream.Send(&pb.JobsResponse{JobResId: id, OutputMessage: s}); err != nil {
 				log.Printf("Failed to send data to client: %v", err)
 				select {
 				case sub.finished <- true:
@@ -182,87 +162,4 @@ func (j *JobManSrv) exeRunner() {
 			j.subscribers.Delete(id)
 		}
 	}
-}
-
-// 일단 삭제
-
-/*func exeRunner1(j *JobManSrv) {
-	log.Println("Starting data generation")
-	for {
-		time.Sleep(time.Second)
-
-		// A list of clients to unsubscribe in case of error
-		var unsubscribe []int64
-
-		// Range 함수는 재귀호출 구문을 사용한다. 정말 좋은 예이다.
-		j.subscribers.Range(func(k, v interface{}) bool {
-			id, ok := k.(int64)
-			if !ok {
-				log.Printf("Failed to cast subscriber key: %T", k)
-				return false
-			}
-			sub, ok := v.(sub)
-			if !ok {
-				log.Printf("Failed to cast subscriber value: %T", v)
-				return false
-			}
-			// Send data over the gRPC stream to the client
-			if err := sub.stream.Send(&pb.JobsResponse{JobReqId: id}); err != nil {
-				log.Printf("Failed to send data to client: %v", err)
-				select {
-				case sub.finished <- true:
-					log.Printf("Unsubscribed client: %d", id)
-				default:
-					// Default case is to avoid blocking in case client has already unsubscribed
-				}
-				// In case of error the client would re-subscribe so close the subscriber stream
-				unsubscribe = append(unsubscribe, id)
-			}
-			return true
-		})
-
-		// Unsubscribe erroneous client streams
-		for _, id := range unsubscribe {
-			j.subscribers.Delete(id)
-		}
-	}
-}*/
-
-// https://groups.google.com/g/golang-nuts/c/MN_W1_oAFrs
-// https://stackoverflow.com/questions/43610646/want-to-write-from-os-stdin-to-os-stdout-using-channels
-// https://stackoverflow.com/questions/10473800/in-go-how-do-i-capture-stdout-of-a-function-into-a-string
-
-// TODO 11/8 고민중
-func (j *JobManSrv) ScriptRunner(ctx context.Context, s string) <-chan string {
-
-	cmd := exec.CommandContext(ctx, s)
-
-	/*	cmd := &exec.Cmd{
-		Path:   "./client_test/date_tester.sh",
-		Args:   []string{"date_tester.sh"},
-		Stdout: os.Stdout,
-		Stderr: os.Stdout,
-	}*/
-
-	/*cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	cmd.Start()*/
-	// 일단 stdout 도 나오게.
-	// 일단 이렇게 하면 결과를 모아서 출력한다. 이렇게 하면 안된다 일단은
-	b, _ := cmd.CombinedOutput()
-
-	r := make(chan string, 1)
-	go func(w io.Writer) {
-		/*	defer close(lines)
-			scan := bufio.NewScanner(r)
-			for scan.Scan() {
-				s := scan.Text()
-				lines <- s
-			}*/
-	}(cmd.Stdout)
-	fmt.Println("return : ", b)
-	//cmd.Wait()
-
-	return r
 }

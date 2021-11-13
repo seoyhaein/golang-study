@@ -7,8 +7,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/any"
 	pb "github.com/seoyhaein/golang-study/protos"
 	"google.golang.org/grpc"
 )
@@ -60,10 +58,9 @@ func main() {
 type longlivedClient struct {
 	client pb.LongLivedJobCallClient // client is the long lived gRPC client
 
-	conn *grpc.ClientConn // conn is the client gRPC connection
-	id   int64            // id is the client ID used for subscribing
-
-	command *any.Any
+	conn    *grpc.ClientConn // conn is the client gRPC connection
+	id      int64            // id is the client ID used for subscribing
+	command string
 }
 
 // mkLonglivedClient creates a new client instance
@@ -75,24 +72,22 @@ func mkLonglivedClient(id int64) (*longlivedClient, error) {
 		return nil, err
 	}
 	// TODO 11/6 일단 any.Any 테스트 하기 위해 그냥 넣어둠. 참고용으로 향후 메모 후 삭제함.
-	// proto 파일도 수정해야함.
+	// proto 파일도 수정해야함. 그냥 뺐음.
+	/*
+		comm := &pb.AnyString{
+			Command: "echo 'hello world'",
+		}
+		b_comm, err := proto.Marshal(comm)*/
 
-	comm := &pb.AnyString{
-		Command: "echo 'hello world'",
-	}
-	b_comm, err := proto.Marshal(comm)
 	if err != nil {
 		return nil, err
 	}
 
 	return &longlivedClient{
-		client: pb.NewLongLivedJobCallClient(conn),
-		conn:   conn,
-		id:     id,
-		command: &any.Any{
-			TypeUrl: "github.com/seoyhaein/golang-study",
-			Value:   b_comm,
-		},
+		client:  pb.NewLongLivedJobCallClient(conn),
+		conn:    conn,
+		id:      id,
+		command: "echo Hello World",
 	}, nil
 }
 
@@ -109,7 +104,7 @@ func (c *longlivedClient) close() {
 // func (c *longlivedClient) subscribe(req *pb.JobsRequest) (pb.LongLivedJobCall_SubscribeClient, error) {
 func (c *longlivedClient) subscribe() (pb.LongLivedJobCall_SubscribeClient, error) {
 	log.Printf("Subscribing client ID: %d", c.id)
-	return c.client.Subscribe(context.Background(), &pb.JobsRequest{JobReqId: c.id})
+	return c.client.Subscribe(context.Background(), &pb.JobsRequest{JobReqId: c.id, InputMessage: c.command})
 }
 
 // unsubscribe unsubscribes to messages from the gRPC server
@@ -144,7 +139,7 @@ func (c *longlivedClient) start() {
 			continue
 		}
 
-		log.Printf("Client ID %d got response: %d", c.id, response.JobReqId)
+		log.Printf("Client ID %d got response: %d", c.id, response.JobResId)
 	}
 }
 
@@ -162,7 +157,7 @@ func (c *longlivedClient) run() error {
 		if err == io.EOF {
 			return err
 		}
-		log.Println("Response : ", response.JobReqId)
+		log.Println("Response : ", response.JobResId)
 		// 서버에서 데이터는 계속 보낸다. 이때 unscribe 를 할경우.
 		c.unsubscribe()
 	}
