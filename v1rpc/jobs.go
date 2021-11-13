@@ -13,10 +13,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-// 10/30
-// TODO api 와 package 를 달리 해서 헷갈리는 것을 방지 하자
-// client 로 부터 전송된 JobsRequest 데이터의 임시 저장 또는 필요 데이터를 메서드에 넘기는 역활
-// 따라서 JobsRequest 일부 동일한 타입의 필드를 가질 수 있으며 추가적인 필드를 가질 수 있다.
+// TODO 10/30 api 와 package 를 달리 해서 헷갈리는 것을 방지 하자
 type JobManSrv struct {
 	// api 가 작성되지 않으면 메세지 뿌린다.
 	pb.UnimplementedLongLivedJobCallServer
@@ -33,24 +30,7 @@ type sub struct {
 
 func RegisterJobsManSrv(service *grpc.Server) {
 	pb.RegisterLongLivedJobCallServer(service, newJobsManSrv())
-	//pb.RegisterLongLivedJobCallServer(service, newJobsManSrv1(exeRunner1))
 }
-
-// https://hwan-shell.tistory.com/339 인라인 함수, stack 에서 힙으로
-// 초기 설정 세팅 해주는 부분
-/*func newJobsManSrv() pb.LongLivedJobCallServer {
-	j := new(JobManSrv)
-	go j.exeRunner()
-	return j
-}
-
-func newJobsManSrv1(f func(j *JobManSrv)) pb.LongLivedJobCallServer {
-	j := new(JobManSrv)
-	return func() pb.LongLivedJobCallServer {
-		go f(j)
-		return j
-	}()
-}*/
 
 func newJobsManSrv() pb.LongLivedJobCallServer {
 	j := new(JobManSrv)

@@ -27,6 +27,26 @@ make gogofast
 
 8. grpc 관련해서 제가 본 책은  오렐리에서 나온 "gRPC 시작에서 운영까지" 웹에서만 자료를 얻다가 책을 보니까 쉽게 많은 것들이 풀렸습니다.
 
+9. 크로져를 쓰는 이유 
+```
+// https://hwan-shell.tistory.com/339 인라인 함수, stack 에서 힙으로
+// 초기 설정 세팅 해주는 부분
+/*func newJobsManSrv() pb.LongLivedJobCallServer {
+	j := new(JobManSrv)
+	go j.exeRunner()
+	return j
+}
+
+func newJobsManSrv1(f func(j *JobManSrv)) pb.LongLivedJobCallServer {
+	j := new(JobManSrv)
+	return func() pb.LongLivedJobCallServer {
+		go f(j)
+		return j
+	}()
+}*/
+
+```
+
 ## 다루고자 하는 내용들 순서대로 (일단 이렇게 예상) - 중간에 기타 내용들은 추가적으로 다룸.
  log -> context -> 인터페이스 -> grpc -> 고루틴/채널
  
