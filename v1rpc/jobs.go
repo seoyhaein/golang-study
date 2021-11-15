@@ -115,15 +115,34 @@ func (j *JobManSrv) scriptRunner(ctx context.Context, in *pb.JobsRequest) (*exec
 	return cmd, r
 }
 
-// TODO 11/13 버그 있음 해결 해야 함.
+// 참고 : https://www.youtube.com/watch?v=Naonb2XD_2Q
 func (j *JobManSrv) reply(i io.Reader) {
 	var unsubscribe []int64
 
 	scan := bufio.NewScanner(i)
-	// TODO 여기 io.EOF 일때 처리 해줘야 함. 지금 계속 돌고 있음. 무한루프.
-	for scan.Scan() {
+
+	for {
+
+		b := scan.Scan()
 		s := scan.Text()
-		// TODO 위에서 루프 구문을 돌리고 있기 때문에. 바꿀 예정.
+
+		// 여기서 마지막을 확인하는 문자열을 넣어주어야함.
+		// 그 이유는 지금의 방식은 일단 subscribe 하면, 해당 메서드의 select 에서 중지가 걸려서 client 가 대기 상태에 빠짐.
+		// 이러한 방식으로 long-lived call 을 구현하였음.
+
+		if b != true {
+			if scan.Err() == nil {
+				// grpc 에서는 스트림을 닫아버리자.
+				//r <- "FINISHED"
+				break
+			}
+			// 그외 에러 표시하기.
+			log.Println(scan.Err())
+			//r <- "ERRORS"
+			break
+		}
+
+		// 수정해줘야 함. 다 지우고 싶음.
 		j.subscribers.Range(func(k, v interface{}) bool {
 			id, ok := k.(int64)
 			if !ok {
@@ -148,6 +167,7 @@ func (j *JobManSrv) reply(i io.Reader) {
 				// In case of error the client would re-subscribe so close the subscriber stream
 				unsubscribe = append(unsubscribe, id)
 			}
+
 			return true
 		})
 
@@ -156,4 +176,5 @@ func (j *JobManSrv) reply(i io.Reader) {
 			j.subscribers.Delete(id)
 		}
 	}
+
 }

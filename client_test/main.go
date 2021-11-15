@@ -148,7 +148,7 @@ func (c *longlivedClient) run() error {
 
 	for {
 		response, err := stream.Recv()
-		// 리턴할 메세지가 없으면..
+
 		if err == io.EOF {
 			return err
 		}
