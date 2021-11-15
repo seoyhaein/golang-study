@@ -66,18 +66,13 @@ type longlivedClient struct {
 // mkLonglivedClient creates a new client instance
 // TODO 11/6 fix or make new a method.
 // 리턴값을 JobsRequest 로 한다.
+// echo 로 일단 고정 해 둠.
+
 func mkLonglivedClient(id int64) (*longlivedClient, error) {
 	conn, err := mkConnection()
 	if err != nil {
 		return nil, err
 	}
-	// TODO 11/6 일단 any.Any 테스트 하기 위해 그냥 넣어둠. 참고용으로 향후 메모 후 삭제함.
-	// proto 파일도 수정해야함. 그냥 뺐음.
-	/*
-		comm := &pb.AnyString{
-			Command: "echo 'hello world'",
-		}
-		b_comm, err := proto.Marshal(comm)*/
 
 	if err != nil {
 		return nil, err
@@ -87,7 +82,7 @@ func mkLonglivedClient(id int64) (*longlivedClient, error) {
 		client:  pb.NewLongLivedJobCallClient(conn),
 		conn:    conn,
 		id:      id,
-		command: "echo Hello World",
+		command: "Hello World",
 	}, nil
 }
 
@@ -157,9 +152,7 @@ func (c *longlivedClient) run() error {
 		if err == io.EOF {
 			return err
 		}
-		log.Println("Response : ", response.JobResId)
-		// 서버에서 데이터는 계속 보낸다. 이때 unscribe 를 할경우.
-		c.unsubscribe()
+		log.Println("Response : ", response.OutputMessage)
 	}
 }
 

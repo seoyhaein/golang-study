@@ -52,12 +52,25 @@ func (j *JobManSrv) Subscribe(in *pb.JobsRequest, s pb.LongLivedJobCall_Subscrib
 	// TODO 11/6 추후 수정 asap. 테스트 코드를 만들어서 진행 후 적용
 	cmd, r := j.scriptRunner(ctx, in)
 	log.Println("2. Run scriptRunner ")
-	go j.reply(r)
-	log.Println("3. Reply... ")
 
-	cmd.Start()
-	cmd.Wait()
-	log.Println("4. Ready... ")
+	// 별도의 스레드로 실행해야  shell script 가 완료된후 시작하지 않는다.
+	// 여기서 사용된 error 는 리턴 되지 않는다.
+	go func(cmd *exec.Cmd) {
+		if cmd != nil {
+			if err := cmd.Start(); err != nil {
+				log.Printf("Error starting Cmd: %v", err)
+				return
+			}
+			if err := cmd.Wait(); err != nil {
+				log.Printf("Error waiting for Cmd: %v", err)
+				return
+			}
+		}
+	}(cmd)
+
+	// 이녀석도 별도의 스레드로 돌린다.
+	go j.reply(r)
+
 	for {
 		select {
 		case <-fin:
@@ -93,7 +106,8 @@ func (j *JobManSrv) Unsubscribe(ctx context.Context, req *pb.JobsRequest) (*pb.J
 // stdio 에 바로 넣음. 아직 context 처리는 하지 않음.
 func (j *JobManSrv) scriptRunner(ctx context.Context, in *pb.JobsRequest) (*exec.Cmd, io.Reader) {
 	// script is InputMessage
-	cmd := exec.CommandContext(ctx, in.InputMessage)
+	// LookPath 때문에 echo 라고 써도 됨.
+	cmd := exec.CommandContext(ctx, "echo", in.InputMessage)
 
 	// StdoutPipe 쓰면 Run 및 기타 Run 을 포함한 method 를 쓰면 에러난다.
 	r, _ := cmd.StdoutPipe()
@@ -106,11 +120,10 @@ func (j *JobManSrv) reply(i io.Reader) {
 	var unsubscribe []int64
 
 	scan := bufio.NewScanner(i)
-	// 디버깅 해야함.
+	// TODO 여기 io.EOF 일때 처리 해줘야 함. 지금 계속 돌고 있음. 무한루프.
 	for scan.Scan() {
 		s := scan.Text()
-		// 주석처리 요망
-		log.Println(s)
+		// TODO 위에서 루프 구문을 돌리고 있기 때문에. 바꿀 예정.
 		j.subscribers.Range(func(k, v interface{}) bool {
 			id, ok := k.(int64)
 			if !ok {
@@ -125,6 +138,7 @@ func (j *JobManSrv) reply(i io.Reader) {
 
 			if err := sub.stream.Send(&pb.JobsResponse{JobResId: id, OutputMessage: s}); err != nil {
 				log.Printf("Failed to send data to client: %v", err)
+
 				select {
 				case sub.finished <- true:
 					log.Printf("Unsubscribed client: %d", id)

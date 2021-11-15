@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 	"os/exec"
+	"strings"
 )
 
 // 참고
@@ -17,8 +19,9 @@ import (
 // https://medium.com/rungo/executing-shell-commands-script-files-and-executables-in-go-894814f1c0f7
 
 func main() {
-	// s := "./client_test/date_tester.sh"
-	s := "./date_tester.sh"
+	s := "./client_test/date_tester.sh"
+	//s := "./date_tester.sh"
+
 	cmd, r := ScriptRunner(s)
 
 	go func(cmd *exec.Cmd) {
@@ -35,8 +38,18 @@ func main() {
 	}(cmd)
 
 	ch := Reply(r)
-
+	// 습관의 차이 일것 같지만 비교해보는 것도 좋은 주제가 되지 않을까?
+	// https://stackoverflow.com/questions/37599302/string-contains-vs-string-equals-or-string-performance
 	for m := range ch {
+		if strings.Contains(m, "FINISHED") {
+			log.Println("Exit Ok")
+			os.Exit(0)
+		}
+		if strings.Contains(m, "ERRORS") {
+			log.Println("Exit Error")
+			os.Exit(1)
+		}
+
 		fmt.Println(">", m)
 	}
 }
@@ -61,7 +74,20 @@ func Reply(i io.Reader) <-chan string {
 		defer close(r)
 		scan := bufio.NewScanner(i)
 
-		for scan.Scan() {
+		for {
+			b := scan.Scan()
+			if b != true {
+				if scan.Err() == nil {
+					// grpc 에서는 스트림을 닫아버리자.
+					r <- "FINISHED"
+					break
+				}
+				// 그외 에러 표시하기.
+				log.Println(scan.Err())
+				r <- "ERRORS"
+				break
+			}
+
 			s := scan.Text()
 			r <- s
 		}
