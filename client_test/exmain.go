@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
 	"os/exec"
 )
 
@@ -16,13 +17,20 @@ import (
 // https://medium.com/rungo/executing-shell-commands-script-files-and-executables-in-go-894814f1c0f7
 
 func main() {
-	s := "./client_test/date_tester.sh"
+	// s := "./client_test/date_tester.sh"
+	s := "./date_tester.sh"
 	cmd, r := ScriptRunner(s)
 
 	go func(cmd *exec.Cmd) {
 		if cmd != nil {
-			cmd.Start()
-			cmd.Wait()
+			if err := cmd.Start(); err != nil {
+				log.Printf("Error starting Cmd: %v", err)
+				return
+			}
+			if err := cmd.Wait(); err != nil {
+				log.Printf("Error waiting for Cmd: %v", err)
+				return
+			}
 		}
 	}(cmd)
 
@@ -37,7 +45,10 @@ func ScriptRunner(s string) (*exec.Cmd, io.Reader) {
 	cmd := exec.Command(s)
 
 	// StdoutPipe 쓰면 Run 및 기타 Run 을 포함한 method 를 쓰면 에러난다.
-	r, _ := cmd.StdoutPipe()
+	r, err := cmd.StdoutPipe()
+	if err != nil {
+		log.Panicf("Error stdout pipe for Cmd: %v", err)
+	}
 
 	return cmd, r
 }
@@ -46,6 +57,7 @@ func Reply(i io.Reader) <-chan string {
 	r := make(chan string, 1)
 	go func() {
 		// 왜 고루틴에 넣는지 잘 생각할 것
+		// 스크립트 실행을 기다리지 않고 실시간으로 결과를 출력하기 위해서?
 		defer close(r)
 		scan := bufio.NewScanner(i)
 
