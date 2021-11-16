@@ -26,6 +26,24 @@ message JobsResponse {
     FINISHED = 5; // 최종 전송이 되었는가 안되었는가
   }
 
+  /*
+    // protocol buffer style guide 에 나온 enum 작성법
+    // type nmae 은 CamelCase value name은 CAPITALS_WITH_UNDERSCORES
+    // 접두사를 사용 선호, zero value 는 UNSPECIFIED 접미사 사용 
+    // UNSPECIFIED 사용하는 이유 참고 : https://stackoverflow.com/questions/48833349/whats-the-purpose-of-having-default-enum-value-as-unspecified-in-google-proto
+    enum Status {
+      STATUS_UNSPECIFIED = 0;
+    
+      STATUS_IN_PROGRESS = 1;
+      STATUS_ICANCELED = 2;
+      STATUS_IFAILED = 3;
+      STATUS_ICOMPLETED = 4;
+
+      STATUS_ITIME_OUT = 5; 
+      STATUS_IFINISHED = 6; 
+    }
+  */
+
   JobsResponse.Status status = 2;
   string output_message = 3;
 }
