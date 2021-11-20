@@ -74,4 +74,6 @@ func newJobsManSrv1(f func(j *JobManSrv)) pb.LongLivedJobCallServer {
     - https://pkg.go.dev/google.golang.org/grpc/backoff
     - https://github.com/grpc/grpc-go/blob/master/examples/features/retry/README.md
     - https://github.com/grpc/grpc-go/tree/master/examples/features
+3. 일단 간단한 방식으로 대략적으로 완성??? 했지만, 그림으로 설명 그림 하나 그리고, 코드들을 좀더 다듬고, shell script 를 담는 부분을 구현하고, 예외 처리등을(사실 이게 제일 할게 많음) 완성할 예정입니다.
+4. grpc test code 작성-study 예정.
 
