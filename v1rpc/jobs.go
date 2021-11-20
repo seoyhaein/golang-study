@@ -154,7 +154,7 @@ func (j *JobManSrv) reply(i io.Reader) {
 
 			b := scan.Scan()
 			s := scan.Text()
-
+			// TODO 11/20 error prone scan.Err() nil 안되는 이유 찾아보아야 함.
 			if b != true {
 				if scan.Err() == nil {
 					fin = 0
