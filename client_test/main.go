@@ -138,6 +138,7 @@ func (c *longlivedClient) start() {
 	}
 }
 
+// TODO 11/20 수정 해줘야 함. client 만 돌때 무한 루프 돔
 func (c *longlivedClient) run() error {
 
 	stream, err := c.subscribe()

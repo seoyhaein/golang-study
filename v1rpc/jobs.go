@@ -41,8 +41,6 @@ func newJobsManSrv() pb.LongLivedJobCallServer {
 // TODO 11/6 이름이 맘에 안듬 추후 수정
 func (j *JobManSrv) Subscribe(in *pb.JobsRequest, s pb.LongLivedJobCall_SubscribeServer) error {
 
-	log.Println("1. job request ID: ", in.JobReqId)
-
 	fin := make(chan bool)
 
 	// map 에 저장한다.
@@ -51,7 +49,6 @@ func (j *JobManSrv) Subscribe(in *pb.JobsRequest, s pb.LongLivedJobCall_Subscrib
 
 	// TODO 11/6 추후 수정 asap. 테스트 코드를 만들어서 진행 후 적용
 	cmd, r := j.scriptRunner(ctx, in)
-	log.Println("2. Run scriptRunner ")
 
 	// 별도의 스레드로 실행해야  shell script 가 완료된후 시작하지 않는다.
 	// 여기서 사용된 error 는 리턴 되지 않는다.
@@ -74,10 +71,10 @@ func (j *JobManSrv) Subscribe(in *pb.JobsRequest, s pb.LongLivedJobCall_Subscrib
 	for {
 		select {
 		case <-fin:
-			log.Printf("Closing stream for client ID: %d", in.JobReqId) // 일단!
+			log.Printf("Closing stream for client ID: %d", in.JobReqId)
 			return nil
 		case <-ctx.Done():
-			log.Printf("Client ID %d has disconnected", in.JobReqId) // 일단!
+			log.Printf("Client ID %d has disconnected", in.JobReqId)
 			return nil
 		}
 	}
@@ -107,7 +104,7 @@ func (j *JobManSrv) Unsubscribe(ctx context.Context, req *pb.JobsRequest) (*pb.J
 func (j *JobManSrv) scriptRunner(ctx context.Context, in *pb.JobsRequest) (*exec.Cmd, io.Reader) {
 	// script is InputMessage
 	// LookPath 때문에 echo 라고 써도 됨.
-	cmd := exec.CommandContext(ctx, "echo", in.InputMessage)
+	cmd := exec.Command("echo", in.InputMessage)
 
 	// StdoutPipe 쓰면 Run 및 기타 Run 을 포함한 method 를 쓰면 에러난다.
 	r, _ := cmd.StdoutPipe()
@@ -116,50 +113,63 @@ func (j *JobManSrv) scriptRunner(ctx context.Context, in *pb.JobsRequest) (*exec
 }
 
 // 참고 : https://www.youtube.com/watch?v=Naonb2XD_2Q
+
+/*
+	finished <- true 가 되는 경우
+	1. send 가 실패한 경우
+    2. shell script 가 실패 한 경우
+    3. 성공한 경우
+*/
+
 func (j *JobManSrv) reply(i io.Reader) {
-	var unsubscribe []int64
+
+	var (
+		unsubscribe []int64
+		fin         int32 = 1
+		sb          sub
+		id          int64
+		ok          bool
+	)
 
 	scan := bufio.NewScanner(i)
 
 	for {
-
-		b := scan.Scan()
-		s := scan.Text()
-
-		// 여기서 마지막을 확인하는 문자열을 넣어주어야함.
-		// 그 이유는 지금의 방식은 일단 subscribe 하면, 해당 메서드의 select 에서 중지가 걸려서 client 가 대기 상태에 빠짐.
-		// 이러한 방식으로 long-lived call 을 구현하였음.
-
-		if b != true {
-			if scan.Err() == nil {
-				// grpc 에서는 스트림을 닫아버리자.
-				//r <- "FINISHED"
-				break
-			}
-			// 그외 에러 표시하기.
-			log.Println(scan.Err())
-			//r <- "ERRORS"
+		// fin = 0  success end, 1 not end, 2 failed
+		if fin == 0 || fin == 2 {
+			sb.finished <- true
 			break
 		}
 
-		// 수정해줘야 함. 다 지우고 싶음.
 		j.subscribers.Range(func(k, v interface{}) bool {
-			id, ok := k.(int64)
+			id, ok = k.(int64)
 			if !ok {
 				log.Printf("Failed to cast subscriber key: %T", k)
 				return false
 			}
-			sub, ok := v.(sub)
+			sb, ok = v.(sub)
 			if !ok {
 				log.Printf("Failed to cast subscriber value: %T", v)
 				return false
 			}
 
-			if err := sub.stream.Send(&pb.JobsResponse{JobResId: id, OutputMessage: s}); err != nil {
+			b := scan.Scan()
+			s := scan.Text()
+
+			if b != true {
+				if scan.Err() == nil {
+					fin = 0
+					return false
+				}
+				log.Println(scan.Err())
+				fin = 2
+				return false
+			}
+
+			if err := sb.stream.Send(&pb.JobsResponse{JobResId: id, OutputMessage: s}); err != nil {
 				log.Printf("Failed to send data to client: %v", err)
 
 				select {
-				case sub.finished <- true:
+				case sb.finished <- true:
 					log.Printf("Unsubscribed client: %d", id)
 				default:
 					// Default case is to avoid blocking in case client has already unsubscribed
