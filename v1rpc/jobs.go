@@ -104,7 +104,7 @@ func (j *JobManSrv) Unsubscribe(ctx context.Context, req *pb.JobsRequest) (*pb.J
 func (j *JobManSrv) scriptRunner(ctx context.Context, in *pb.JobsRequest) (*exec.Cmd, io.Reader) {
 	// script is InputMessage
 	// LookPath 때문에 echo 라고 써도 됨.
-	cmd := exec.Command("echo", in.InputMessage)
+	cmd := exec.CommandContext(ctx, "echo", in.InputMessage)
 
 	// StdoutPipe 쓰면 Run 및 기타 Run 을 포함한 method 를 쓰면 에러난다.
 	r, _ := cmd.StdoutPipe()
