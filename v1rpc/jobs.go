@@ -155,6 +155,7 @@ func (j *JobManSrv) reply(i io.Reader) {
 			b := scan.Scan()
 			s := scan.Text()
 			// TODO 11/20 error prone scan.Err() nil 안되는 이유 찾아보아야 함.
+			// 대략적으로, scriptRunner 에서 error 처리 안된 부분과 관련이 있는 것 같음.
 			if b != true {
 				if scan.Err() == nil {
 					fin = 0

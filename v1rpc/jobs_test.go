@@ -11,6 +11,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"os"
 	"testing"
 
 	pb "github.com/seoyhaein/golang-study/protos"
@@ -22,18 +23,47 @@ const bufSize = 1024 * 1024
 
 var li *bufconn.Listener
 
-func init() {
+// 여기다가 넣는 것에 대한 의문
+/*func init() {
+	// Write code here to run before tests
 	li = bufconn.Listen(bufSize)
 	s := grpc.NewServer()
 	// 이 메서드도 test 해야 하지만 스킵한다.
 	RegisterJobsManSrv(s)
 
 	// TODO 11/21 server 가 s.Stop() 되는지도 한번 확인해보자.
+	// https://stackoverflow.com/questions/38484942/golang-testing-with-init-func
 	go func() {
 		if err := s.Serve(li); err != nil {
 			log.Fatalf("Server exited with error: %v", err)
 		}
 	}()
+
+}*/
+
+func TestMain(m *testing.M) {
+	// Write code here to run before tests
+	li = bufconn.Listen(bufSize)
+	s := grpc.NewServer()
+	// 이 메서드도 test 해야 하지만 스킵한다.
+	RegisterJobsManSrv(s)
+
+	// TODO 11/21 server 가 s.Stop() 되는지도 한번 확인해보자.
+	// https://stackoverflow.com/questions/38484942/golang-testing-with-init-func
+	go func() {
+		if err := s.Serve(li); err != nil {
+			log.Fatalf("Server exited with error: %v", err)
+		}
+	}()
+
+	// Run tests
+	exitVal := m.Run()
+
+	// Write code here to run after tests
+	s.Stop()
+
+	// Exit with exit value from tests
+	os.Exit(exitVal)
 }
 
 func bufDialer(context.Context, string) (net.Conn, error) {
@@ -43,7 +73,7 @@ func bufDialer(context.Context, string) (net.Conn, error) {
 func TestJobManSrv_Subscribe(t *testing.T) {
 
 	ctx := context.Background()
-	conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(bufDialer), grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		t.Fatalf("Failed to dial bufnet: %v", err)
 	}
