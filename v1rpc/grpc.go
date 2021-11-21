@@ -35,6 +35,7 @@ func init() {
 	encoding.RegisterCodec(wrapCodec{protoCodec{}})
 }
 
+// TODO 11/21
 // tls 는 일단 지금은 생략하자.
 // 추후 고쳐나가자. 일단은 가장 간단한 형태로 만들어 놓고 테스트 진행하면서 고도화 하자.
 // gopts ...grpc.ServerOption 집어 넣는 방향

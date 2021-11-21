@@ -65,7 +65,7 @@ func (j *JobManSrv) Subscribe(in *pb.JobsRequest, s pb.LongLivedJobCall_Subscrib
 		}
 	}(cmd)
 
-	// 이녀석도 별도의 스레드로 돌린다.
+	// TODO error prone file already closed. 이녀석도 별도의 스레드로 돌린다.
 	go j.reply(r)
 
 	for {
@@ -105,7 +105,7 @@ func (j *JobManSrv) scriptRunner(ctx context.Context, in *pb.JobsRequest) (*exec
 	// script is InputMessage
 	// LookPath 때문에 echo 라고 써도 됨.
 	cmd := exec.CommandContext(ctx, "echo", in.InputMessage)
-
+	// TODO 11/21 error prone, error 를 살려서 보자. 이거 에러 처리 해야함.
 	// StdoutPipe 쓰면 Run 및 기타 Run 을 포함한 method 를 쓰면 에러난다.
 	r, _ := cmd.StdoutPipe()
 
@@ -160,6 +160,7 @@ func (j *JobManSrv) reply(i io.Reader) {
 					fin = 0
 					return false
 				}
+				// 이거 살펴봐야 함. file already closed
 				log.Println(scan.Err())
 				fin = 2
 				return false
